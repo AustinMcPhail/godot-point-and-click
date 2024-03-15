@@ -31,14 +31,13 @@ func _ready():
 	
 func _mouse_enter():
 	if alive:
-		player.mouse_state.on_mouse_enter(self)
+		player.pointer.on_mouse_enter(self)
 	
 func _mouse_exit():
-	player.mouse_state.on_mouse_exit(self)
+	player.pointer.on_mouse_exit(self)
 	
 func _input_event(viewport, event: InputEvent, shape_idx):
 	if Input.is_action_just_pressed("LeftMouse"):
-		print(event)
 		if alive:
 			player.move_to_and_perform_action(self)
 		else:
@@ -81,7 +80,7 @@ func _process(delta):
 		progress_bar.value = 0
 		sprite.visible = false
 		logSprite.visible = true
-		player.mouse_state.on_mouse_exit(self)
+		player.pointer.on_mouse_exit(self)
 		player.complete_action(EXP_PER_ACTION, RESULT_PER_ACTION)
 		player.stop_actions()
 

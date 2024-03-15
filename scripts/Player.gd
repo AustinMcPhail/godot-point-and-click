@@ -10,7 +10,7 @@ var current_id_path: Array[Vector2i]
 var current_point_path: PackedVector2Array
 var target_pos: Vector2 = Vector2.ZERO
 var action_node
-var mouse_state: MouseState = MouseState.new()
+@onready var pointer: Pointer = $"Pointer"
 
 
 @onready var inventory: Inventory = $"Inventory"
