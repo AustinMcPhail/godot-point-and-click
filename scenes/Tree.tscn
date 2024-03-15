@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://c6grvodaag2ow"]
 
-[ext_resource type="Script" path="res://Tree.gd" id="1_jg7cl"]
+[ext_resource type="Script" path="res://scripts/Tree.gd" id="1_87qbl"]
 [ext_resource type="Texture2D" uid="uid://derqex2dbi66f" path="res://assets/tileset/PNG/spr_terrains.png" id="2_gjaaj"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2apnr"]
@@ -56,7 +56,7 @@ bg_color = Color(0, 0, 0, 1)
 bg_color = Color(0.733333, 0.682353, 0, 1)
 
 [node name="Tree" type="Area2D" groups=["action"]]
-script = ExtResource("1_jg7cl")
+script = ExtResource("1_87qbl")
 
 [node name="TreeSprite" type="Sprite2D" parent="."]
 position = Vector2(0, -8)

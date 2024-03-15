@@ -38,6 +38,7 @@ func _mouse_exit():
 	
 func _input_event(viewport, event: InputEvent, shape_idx):
 	if Input.is_action_just_pressed("LeftMouse"):
+		print(event)
 		if alive:
 			player.move_to_and_perform_action(self)
 		else:

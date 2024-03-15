@@ -22,7 +22,7 @@ func _ready():
 
 func _input(event):
 	if Input.is_action_just_pressed("LeftMouse"):
-		handle_move_to(get_global_mouse_position())		
+		handle_move_to(get_global_mouse_position())
 	if Input.is_action_just_pressed("Inventory"):
 		inventory.list_items()
 	if Input.is_action_just_pressed("Player"):
