@@ -17,6 +17,9 @@ var BASE_CHANCE_TO_FAIL_ACTION = 20.0
 @onready var tile_map: TileMap = $"../TileMap"
 @onready var sprite: Sprite2D = $"TreeSprite"
 @onready var logSprite: Sprite2D = $"LogSprite"
+@onready var animation_player: AnimationPlayer = $"AnimationPlayer"
+@onready var progress_bar: ProgressBar = $"ProgressBar"
+	
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	sprite.visible = true
@@ -54,22 +57,24 @@ func _process(delta):
 				else:
 					if (chance >= crit_threshold):
 						print("You perfectly sink your axe into the wood and do the work of two swings in one")
-						hitpoints = hitpoints - 2
+						hit(2, true)
 					else:
 						print("You successfully cut into the tree")
-						hitpoints = hitpoints - 1
+						hit(1)
 		time = 0
 		
 	if regen_timer > TIME_PERIOD * 5:
 		if !player_is_doing_action:
 			if hitpoints < 5:
 				hitpoints = hitpoints + 1
+				progress_bar.value = hitpoints * (100 / 5)
 		regen_timer = 0
-	pass
 	
 	if hitpoints <= 0 && player_is_doing_action:
 		print("Timber!")
 		alive = false
+		progress_bar.visible = true
+		progress_bar.value = 0
 		sprite.visible = false
 		logSprite.visible = true
 		player.mouse_state.on_mouse_exit(self)
@@ -78,6 +83,7 @@ func _process(delta):
 
 	if hitpoints == 5 && !player_is_doing_action:
 		alive = true
+		progress_bar.visible = false
 		sprite.visible = true
 		logSprite.visible = false
 			
@@ -87,7 +93,16 @@ func start():
 		player_is_doing_action = true
 	
 func stop():
+	animation_player.stop()
 	player_is_doing_action = false
 	
 func is_started():
 	return player_is_doing_action
+	
+func hit(damage: int, critical_hit = false):
+	if (critical_hit):
+		animation_player.play("shake_critical")
+	else:
+		animation_player.play("shake")
+	hitpoints = hitpoints - damage
+

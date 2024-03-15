@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1_6xfp7")
-exp_mod = 20
+exp_mod = 100
 woodcutting_level = 100
