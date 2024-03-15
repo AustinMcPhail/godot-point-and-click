@@ -13,8 +13,9 @@ var EXP_PER_ACTION = {Woodcutting.NAME: 10.0}
 var RESULT_PER_ACTION = {"log": 1}
 var BASE_CHANCE_TO_FAIL_ACTION = 20.0
 
-@onready var player: Player = $"../Player"
-@onready var tile_map: TileMap = $"../TileMap"
+var player: Player
+var map: Map
+
 @onready var sprite: Sprite2D = $"TreeSprite"
 @onready var logSprite: Sprite2D = $"LogSprite"
 @onready var animation_player: AnimationPlayer = $"AnimationPlayer"
@@ -22,9 +23,11 @@ var BASE_CHANCE_TO_FAIL_ACTION = 20.0
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	player = get_tree().get_first_node_in_group("player")
+	map = get_tree().get_first_node_in_group("map")
 	sprite.visible = true
 	logSprite.visible = false
-	player.grid.set_point_solid(tile_map.local_to_map(position), true)
+	map.grid.set_point_solid(map.local_to_map(position), true)
 	
 func _mouse_enter():
 	if alive:
