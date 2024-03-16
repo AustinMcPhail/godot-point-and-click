@@ -2,7 +2,7 @@ class_name ChoppableTree
 
 extends Area2D
 
-@export var hitpoints = 5
+var hitpoints = 5
 var alive = true
 
 var time = 0
@@ -15,6 +15,9 @@ var BASE_CHANCE_TO_FAIL_ACTION = 20.0
 
 var player: Player
 var map: Map
+var pointer: Pointer
+
+var cursor = Input.CURSOR_POINTING_HAND
 
 @onready var sprite: Sprite2D = $"TreeSprite"
 @onready var logSprite: Sprite2D = $"LogSprite"
@@ -24,27 +27,29 @@ var map: Map
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	player = get_tree().get_first_node_in_group("player")
+	pointer = get_tree().get_first_node_in_group("pointer")
 	map = get_tree().get_first_node_in_group("map")
 	sprite.visible = true
 	logSprite.visible = false
 	map.grid.set_point_solid(map.local_to_map(position), true)
 	
 func _mouse_enter():
-	if alive:
-		player.pointer.on_mouse_enter(self)
-	
+	pointer.set_hovered(self)
+
 func _mouse_exit():
-	player.pointer.on_mouse_exit(self)
-	
+	pointer.clear_hovered(self)
+
 func _input_event(viewport, event: InputEvent, shape_idx):
-	if Input.is_action_just_pressed("LeftMouse"):
-		if alive:
-			player.move_to_and_perform_action(self)
-		else:
-			player.handle_move_to(self.position)
-	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):	
+	if event is InputEventMouseButton:
+		if Input.is_action_just_pressed("RightMouse"):
+			pointer.open_context_menu(self, event.global_position)
+		if Input.is_action_just_pressed("LeftMouse"):
+			if alive:
+				player.move_to_and_perform_action(self)
+			else:
+				player.handle_move_to(self.position)
+
+func _process(delta):
 	time += delta
 	regen_timer += delta
 
@@ -76,16 +81,17 @@ func _process(delta):
 	if hitpoints <= 0 && player_is_doing_action:
 		print("Timber!")
 		alive = false
+		cursor = Input.CURSOR_ARROW
 		progress_bar.visible = true
 		progress_bar.value = 0
 		sprite.visible = false
 		logSprite.visible = true
-		player.pointer.on_mouse_exit(self)
 		player.complete_action(EXP_PER_ACTION, RESULT_PER_ACTION)
 		player.stop_actions()
 
 	if hitpoints == 5 && !player_is_doing_action:
 		alive = true
+		cursor = Input.CURSOR_POINTING_HAND
 		progress_bar.visible = false
 		sprite.visible = true
 		logSprite.visible = false
@@ -109,3 +115,17 @@ func hit(damage: int, critical_hit = false):
 		animation_player.play("shake")
 	hitpoints = hitpoints - damage
 
+func get_context_label():
+	return "Tree"
+	
+func chop():
+	player.move_to_and_perform_action(self)
+	
+func examine():
+	print("It is a tree.")
+
+func get_context_menu():
+	return [
+		["Chop", self.chop],
+		["Examine", self.examine]
+	]

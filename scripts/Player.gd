@@ -10,19 +10,29 @@ var current_id_path: Array[Vector2i]
 var current_point_path: PackedVector2Array
 var target_pos: Vector2 = Vector2.ZERO
 var action_node
-@onready var pointer: Pointer = $"Pointer"
-
-
 @onready var inventory: Inventory = $"Inventory"
 @onready var sprite: AnimatedSprite2D = $"AnimatedSprite2D"
+@onready var camera: Camera2D = $"Camera2D"
 var map: Map
+var pointer: Pointer
+var context_menu_entered = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	camera.zoom = Vector2(8, 8)
 	map = get_tree().get_first_node_in_group("map")
+	pointer = get_tree().get_first_node_in_group("pointer")
+	pointer.context_menu_entered.connect(func(): context_menu_entered = true)
+	pointer.context_menu_exited.connect(func(): context_menu_entered = false)
 
 func _input(event):
-	if Input.is_action_just_pressed("LeftMouse"):
-		handle_move_to(get_global_mouse_position())
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
+			camera.zoom = Vector2(min(camera.zoom.x + 1, 10), min(camera.zoom.y + 1, 10))
+		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
+			camera.zoom = Vector2(max(camera.zoom.x - 1, 2), max(camera.zoom.y - 1, 2))
+	if (!context_menu_entered):
+		if Input.is_action_just_pressed("LeftMouse"):
+			handle_move_to(get_global_mouse_position())
 	if Input.is_action_just_pressed("Inventory"):
 		inventory.list_items()
 	if Input.is_action_just_pressed("Player"):
@@ -50,30 +60,13 @@ func _physics_process(delta):
 			target_pos = Vector2.ZERO
 			current_point_path = []
 
-func get_tile_boundaries(tile: Vector2):
-	var top_left = Vector2(
-		tile.x - 8,
-		tile.y - 8,
-	)
-	var top_right = Vector2(
-		tile.x + 8,
-		tile.y - 8,
-	)
-	var bottom_right = Vector2(
-		tile.x + 8,
-		tile.y + 8,
-	)
-	var bottom_left = Vector2(
-		tile.x - 8,
-		tile.y + 8,
-	)
-	return [top_left, top_right, bottom_right, bottom_left]
-
 func move_to_and_perform_action(node: Node2D):
-	handle_move_to(node.position)
-	action_node = node
+	if (!context_menu_entered):
+		handle_move_to(node.position)
+		action_node = node
 	
 func handle_move_to(position: Vector2):
+	pointer.close_context_menu()
 	if action_node != null && action_node.is_started():
 		action_node.stop()
 		action_node = null

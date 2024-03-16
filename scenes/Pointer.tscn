@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3 uid="uid://dwkubucv404mr"]
+
+[ext_resource type="Script" path="res://scripts/Pointer.gd" id="1_v23k5"]
+[ext_resource type="Script" path="res://scripts/ContextMenu.gd" id="2_3o1jq"]
+[ext_resource type="Script" path="res://scripts/ContextLabel.gd" id="3_dlyt5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2sgh1"]
+bg_color = Color(0.168627, 0.168627, 0.168627, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 5.0
+expand_margin_top = 2.0
+expand_margin_right = 5.0
+expand_margin_bottom = 2.0
+shadow_color = Color(0, 0, 0, 0.419608)
+shadow_size = 5
+shadow_offset = Vector2(2, 4)
+
+[node name="Pointer" type="Node2D"]
+script = ExtResource("1_v23k5")
+
+[node name="ContextLabel" type="PanelContainer" parent="."]
+offset_left = 4.0
+offset_top = -40.0
+offset_right = 41.0
+offset_bottom = -12.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2sgh1")
+script = ExtResource("3_dlyt5")
+
+[node name="Label" type="Label" parent="ContextLabel"]
+layout_mode = 2
+text = "Tree"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ContextMenu" type="GridContainer" parent="."]
+offset_top = 48.0
+offset_right = 40.0
+offset_bottom = 88.0
+script = ExtResource("2_3o1jq")
