@@ -11,7 +11,7 @@ var current_point_path: PackedVector2Array
 var target_pos: Vector2 = Vector2.ZERO
 var action_node
 @onready var inventory: Inventory = $"Inventory"
-@onready var sprite: AnimatedSprite2D = $"AnimatedSprite2D"
+@onready var sprite: PlayerSprite = $"PlayerSprite"
 @onready var camera: Camera2D = $"Camera2D"
 var map: Map
 var pointer: Pointer
@@ -39,8 +39,8 @@ func _input(event):
 		skills.list_skills()
 
 func _physics_process(delta):
-	update_animation_state()
-	update_player_direction()
+	sprite.update_animation_state(current_id_path)
+	sprite.update_player_direction(current_id_path, target_pos)
 
 	if current_id_path.is_empty():
 		if action_node != null and !action_node.is_started():
@@ -117,15 +117,3 @@ func stop_actions():
 func complete_action(exp: Dictionary, result: Dictionary):
 	skills.add_exp(exp)
 	inventory.add_items(result);
-	
-func update_animation_state():
-	if (current_id_path.is_empty() == false):
-		sprite.play("move")
-	else:
-		sprite.play("default")
-
-func update_player_direction():
-	if current_id_path.is_empty() == false && target_pos.x < position.x:
-		sprite.flip_h = true
-	elif current_id_path.is_empty() == false && target_pos.x > position.x:
-		sprite.flip_h = false
