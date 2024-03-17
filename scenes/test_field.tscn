@@ -1,5 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://0w7t4sh3gcqx"]
+[gd_scene load_steps=11 format=3 uid="uid://0w7t4sh3gcqx"]
 
+[ext_resource type="Script" path="res://scripts/Homeworld.gd" id="1_yesp3"]
 [ext_resource type="Texture2D" uid="uid://derqex2dbi66f" path="res://assets/tileset/PNG/spr_terrains.png" id="2_ks2v4"]
 [ext_resource type="Script" path="res://scripts/Map.gd" id="3_vfr0g"]
 [ext_resource type="PackedScene" uid="uid://dw82qhmkyitot" path="res://scenes/Player.tscn" id="5_a065t"]
@@ -825,11 +826,18 @@ custom_data_layer_1/type = 1
 sources/2 = SubResource("TileSetAtlasSource_xnpel")
 sources/3 = SubResource("TileSetScenesCollectionSource_deerw")
 
-[node name="Node2D" type="Node2D"]
+[node name="Homeworld" type="Node2D"]
+script = ExtResource("1_yesp3")
+map_size_in_chunks = 10
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="Pointer" parent="CanvasLayer" groups=["pointer"] instance=ExtResource("7_n5s70")]
+
+[node name="Player" parent="." instance=ExtResource("5_a065t")]
+
+[node name="Path" type="Node2D" parent="."]
+script = ExtResource("5_wa5j5")
 
 [node name="TileMap" type="TileMap" parent="."]
 y_sort_enabled = true
@@ -846,9 +854,3 @@ layer_1/y_sort_origin = 0
 layer_1/z_index = 0
 layer_1/tile_data = PackedInt32Array(-131075, 3, 65536, -131074, 3, 65536, -131073, 3, 65536, -196608, 3, 65536, -196607, 3, 65536, -196606, 3, 65536, -196605, 3, 65536, -131069, 3, 65536, -65533, 3, 65536, 3, 3, 65536, 65539, 3, 65536, 131075, 3, 65536, -65539, 3, 65536, -3, 3, 65536, 65533, 3, 65536, 131069, 3, 65536, 196605, 3, 65536, 196606, 3, 65536, 196607, 3, 65536, 131074, 3, 65536, 131073, 3, 65536)
 script = ExtResource("3_vfr0g")
-
-[node name="Player" parent="TileMap" instance=ExtResource("5_a065t")]
-
-[node name="Path" type="Node2D" parent="."]
-visible = false
-script = ExtResource("5_wa5j5")

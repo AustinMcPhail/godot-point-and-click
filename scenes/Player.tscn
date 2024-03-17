@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_10fmb"]
 [ext_resource type="Texture2D" uid="uid://cq2khe7otxw2v" path="res://assets/player/player.png" id="3_h5b2c"]
+[ext_resource type="Script" path="res://scripts/PlayerSprite.gd" id="4_dbeeh"]
 [ext_resource type="Resource" uid="uid://cdu683wbrqxth" path="res://skills/skills_resource.tres" id="4_wlfmj"]
 [ext_resource type="Script" path="res://scripts/Inventory.gd" id="4_wvgnp"]
-[ext_resource type="Script" path="res://scenes/PlayerSprite.gd" id="4_xrtdr"]
 [ext_resource type="Shader" path="res://shaders/silhouette.gdshader" id="5_yq4fa"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yb5hm"]
@@ -182,7 +182,7 @@ hframes = 8
 vframes = 4
 region_enabled = true
 region_rect = Rect2(0, 0, 256, 128)
-script = ExtResource("4_xrtdr")
+script = ExtResource("4_dbeeh")
 
 [node name="Silhouette" type="Sprite2D" parent="PlayerSprite"]
 z_index = 4096

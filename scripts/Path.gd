@@ -1,8 +1,9 @@
 extends Node2D
 
-@onready var player = $"../Player"
-@onready var pointer = $"../Poi"
-@onready var tile_map = $"../TileMap"
+var player: Player
+
+func _ready():
+	player = get_tree().get_first_node_in_group("player")
 
 func _process(delta):
 	queue_redraw()
@@ -14,7 +15,7 @@ func _draw():
 		return
 		
 	draw_polyline(player.current_point_path, Color.REBECCA_PURPLE)
-	var target_tile_bounds = player.get_tile_boundaries(player.target_pos)
+	var target_tile_bounds = Map.get_tile_boundaries(player.target_pos)
 	target_tile_bounds.append(target_tile_bounds.front())
 	draw_polyline(
 		PackedVector2Array(target_tile_bounds),
