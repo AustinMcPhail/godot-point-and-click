@@ -39,11 +39,11 @@ func _input(event):
 		skills.list_skills()
 
 func _physics_process(delta):
-	sprite.update_animation_state(current_id_path)
-	sprite.update_player_direction(current_id_path, target_pos)
+	sprite.update_animation_state(current_id_path, target_pos)
 
 	if current_id_path.is_empty():
 		if action_node != null and !action_node.is_started():
+			sprite.update_animation_direction(action_node.position)
 			action_node.start()
 		return
 		
