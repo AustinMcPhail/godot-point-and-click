@@ -29,19 +29,25 @@ var WATER_CELLS = [Vector2i(11, 19),Vector2i(12, 19),Vector2i(13, 19),Vector2i(1
 @onready var tile_map: Map = $"TileMap"
 @onready var player: Player = $"Player"
 
+var grid: AStarGrid2D = AStarGrid2D.new()
+
 func _ready():
-	spawn_chunk = Vector2(floor(map_size_in_chunks / 2), floor(map_size_in_chunks / 2))
 	map_size = Vector2(
 		map_size_in_chunks * chunk_size,
 		map_size_in_chunks * chunk_size
 	)
+	position = Vector2.ZERO
+	grid.region = Rect2i(position, map_size)
+	grid.cell_size = Vector2(16, 16)
+	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+	grid.update()
+	
 	var seed = Time.get_unix_time_from_system()
 	var altitude_seed = randf_range(-seed, seed)
 	var trees_seed = randf_range(-seed, seed)
 	altitude = generate_map(altitude_seed, alt_freq, oct, lac, gain, FastNoiseLite.FRACTAL_FBM, FastNoiseLite.TYPE_PERLIN)
 	trees = generate_map(trees_seed, alt_freq, oct, lac, gain, FastNoiseLite.FRACTAL_PING_PONG, FastNoiseLite.TYPE_SIMPLEX)
 	set_tiles()
-	tile_map.update_map()
 	var spawn_chunk_idx = randi_range(0, spawn_chunk_candidates.size() - 1)
 	spawn_chunk = spawn_chunk_candidates[spawn_chunk_idx]
 	var spawn_tile = Vector2(
@@ -58,7 +64,6 @@ func _ready():
 			spawn_chunk.y * chunk_size + floor(chunk_size / 2), 
 		)
 		spawn_tile_blocked = has_tree(spawn_tile)
-	print(spawn_tile, " => ", tile_map.map_to_local(spawn_tile))
 	player.position = tile_map.map_to_local(spawn_tile)
 
 func generate_map(noise_seed, frequency, octaves, lacunarity, gain, fractal_type, noise_type):
@@ -94,9 +99,11 @@ func set_tiles():
 					if alt < 1:
 						spawn_chunk_candidate = false
 						tile_map.set_cell(0, pos, 2, WATER_CELLS[randi_range(0, WATER_CELLS.size() - 1)])
+						grid.set_point_solid(pos, true)
 					else:
 						if (has_tree(pos)):
 							tile_map.set_cell(1, pos, 3, Vector2i.ZERO, 1)
+							grid.set_point_solid(pos, true)
 						tile_map.set_cell(0, pos, 2, GRASS_CELLS[randi_range(0, GRASS_CELLS.size() - 1)])
 			if spawn_chunk_candidate:
 				spawn_chunk_candidates.push_back(Vector2(cx, cy))

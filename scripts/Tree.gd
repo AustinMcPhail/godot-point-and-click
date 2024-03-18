@@ -16,6 +16,7 @@ var BASE_CHANCE_TO_FAIL_ACTION = 20.0
 var player: Player
 var map: Map
 var pointer: Pointer
+var homeworld: Homeworld
 
 var cursor = Input.CURSOR_POINTING_HAND
 
@@ -28,10 +29,10 @@ var cursor = Input.CURSOR_POINTING_HAND
 func _ready():
 	player = get_tree().get_first_node_in_group("player")
 	pointer = get_tree().get_first_node_in_group("pointer")
-	map = get_tree().get_first_node_in_group("map")
+	homeworld = get_tree().get_first_node_in_group("homeworld")
 	sprite.visible = true
 	logSprite.visible = false
-	map.grid.set_point_solid(map.local_to_map(position), true)
+#	homeworld.grid.set_point_solid(homeworld.tile_map.local_to_map(position), true)
 	
 func _mouse_enter():
 	pointer.set_hovered(self)

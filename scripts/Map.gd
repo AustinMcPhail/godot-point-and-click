@@ -8,17 +8,6 @@ var hovered_cell
 func _init():
 	add_to_group("map")
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	update_map()
-
-func update_map():
-	grid = AStarGrid2D.new()
-	grid.region = get_used_rect()
-	grid.cell_size = Vector2(16, 16)
-	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
-	grid.update()
-
 
 func _draw():
 	hovered_cell = local_to_map(get_local_mouse_position())
