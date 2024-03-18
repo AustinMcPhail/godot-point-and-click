@@ -11,10 +11,8 @@ var hovered = null
 
 var context_menu_entered: Signal
 var context_menu_exited: Signal
-var map: Map
 
 func _ready():
-	map = get_tree().get_first_node_in_group("map")
 	context_menu_entered = menu.mouse_entered
 	context_menu_exited = menu.mouse_exited
 

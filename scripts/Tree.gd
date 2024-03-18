@@ -14,7 +14,6 @@ var RESULT_PER_ACTION = {"log": 1}
 var BASE_CHANCE_TO_FAIL_ACTION = 20.0
 
 var player: Player
-var map: Map
 var pointer: Pointer
 var homeworld: Homeworld
 
@@ -32,7 +31,6 @@ func _ready():
 	homeworld = get_tree().get_first_node_in_group("homeworld")
 	sprite.visible = true
 	logSprite.visible = false
-#	homeworld.grid.set_point_solid(homeworld.tile_map.local_to_map(position), true)
 	
 func _mouse_enter():
 	pointer.set_hovered(self)
@@ -45,6 +43,7 @@ func _input_event(viewport, event: InputEvent, shape_idx):
 		if Input.is_action_just_pressed("RightMouse"):
 			pointer.open_context_menu(self, event.global_position)
 		if Input.is_action_just_pressed("LeftMouse"):
+			print(alive)
 			if alive:
 				player.move_to_and_perform_action(self)
 			else:

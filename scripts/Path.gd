@@ -15,7 +15,7 @@ func _draw():
 		return
 		
 	draw_polyline(player.current_point_path, Color.REBECCA_PURPLE)
-	var target_tile_bounds = Map.get_tile_boundaries(player.target_pos)
+	var target_tile_bounds = Chunk.get_tile_boundaries(player.target_pos)
 	target_tile_bounds.append(target_tile_bounds.front())
 	draw_polyline(
 		PackedVector2Array(target_tile_bounds),

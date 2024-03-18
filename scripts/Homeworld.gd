@@ -14,7 +14,7 @@ var spawn_chunk: Vector2 = Vector2.ZERO
 var map_size: Vector2 = Vector2.ZERO
 
 var noise_map: FastNoiseLite
-const CHUNK_MAP = {}
+const chunk_map = {}
 var temperature = {}
 var altitude = {}
 var trees = {}
@@ -26,7 +26,7 @@ var spawn_chunk_candidates = []
 var GRASS_CELLS = [Vector2i(27, 6),Vector2i(27, 7),Vector2i(27, 8),Vector2i(27, 9)]
 var WATER_CELLS = [Vector2i(11, 19),Vector2i(12, 19),Vector2i(13, 19),Vector2i(14, 19)]
 
-@onready var tile_map: Map = $"TileMap"
+@onready var tile_map: Chunk = $"TileMap"
 @onready var player: Player = $"Player"
 
 var grid: AStarGrid2D = AStarGrid2D.new()
@@ -48,6 +48,7 @@ func _ready():
 	altitude = generate_map(altitude_seed, alt_freq, oct, lac, gain, FastNoiseLite.FRACTAL_FBM, FastNoiseLite.TYPE_PERLIN)
 	trees = generate_map(trees_seed, alt_freq, oct, lac, gain, FastNoiseLite.FRACTAL_PING_PONG, FastNoiseLite.TYPE_SIMPLEX)
 	set_tiles()
+	tile_map.update()
 	var spawn_chunk_idx = randi_range(0, spawn_chunk_candidates.size() - 1)
 	spawn_chunk = spawn_chunk_candidates[spawn_chunk_idx]
 	var spawn_tile = Vector2(
@@ -77,7 +78,6 @@ func generate_map(noise_seed, frequency, octaves, lacunarity, gain, fractal_type
 	noise_map.fractal_gain = gain
 	
 	var map = {}
-	var chunk_map = {}
 	for cx in map_size_in_chunks:
 		for cy in map_size_in_chunks:
 			for tx in chunk_size:
@@ -89,6 +89,7 @@ func generate_map(noise_seed, frequency, octaves, lacunarity, gain, fractal_type
 func set_tiles():
 	for cx in map_size_in_chunks:
 		for cy in map_size_in_chunks:
+#			var chunk = Chunk.new()
 			var spawn_chunk_candidate = true
 			for tx in chunk_size:
 				for ty in chunk_size:

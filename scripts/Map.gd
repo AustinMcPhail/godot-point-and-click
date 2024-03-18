@@ -1,13 +1,12 @@
-class_name Map
+class_name Chunk
 
 extends TileMap
 
 var grid: AStarGrid2D
 var hovered_cell
 
-func _init():
-	add_to_group("map")
-
+@onready var container: PanelContainer = $"PanelContainer"
+@onready var label: Label = $"PanelContainer/Label"
 
 func _draw():
 	hovered_cell = local_to_map(get_local_mouse_position())
@@ -23,6 +22,11 @@ func _draw():
 
 func _process(delta):
 	queue_redraw()
+	
+func update():
+	container.custom_minimum_size = get_used_rect().size * Vector2i(16, 16)
+	container.size = get_used_rect().size * Vector2i(16, 16)
+	label.text = "Hello"
 
 static func get_tile_boundaries(tile: Vector2):
 	var top_left = Vector2(
