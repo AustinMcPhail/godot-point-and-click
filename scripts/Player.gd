@@ -106,6 +106,11 @@ func handle_move_to(position: Vector2):
 	var clicked_tile = homeworld.tile_map.local_to_map(position);
 	var reset_target_to_solid = false
 	var grid = homeworld.grid
+	
+	if (grid.is_point_solid(clicked_tile)):
+		var tile_data = homeworld.tile_map.get_cell_tile_data(0, clicked_tile)
+		reset_target_to_solid = true
+		grid.set_point_solid(homeworld.tile_map.local_to_map(position), false)
 		
 	var id_path: Array[Vector2i]
 	if target_pos != Vector2.ZERO:
