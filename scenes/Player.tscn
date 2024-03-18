@@ -169,7 +169,6 @@ _data = {
 
 [node name="Player" type="Node2D" groups=["player"]]
 y_sort_enabled = true
-position = Vector2(8, 8)
 script = ExtResource("1_10fmb")
 skills = ExtResource("4_wlfmj")
 

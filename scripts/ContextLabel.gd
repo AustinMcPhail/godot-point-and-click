@@ -11,6 +11,7 @@ var text = "":
 		return label.text
 
 func _ready():
+	label.text = ""
 	visible = false
 
 func _process(delta):

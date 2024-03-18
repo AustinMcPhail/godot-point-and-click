@@ -3,7 +3,7 @@ class_name Map
 extends TileMap
 
 var grid: AStarGrid2D
-var player: Player
+var hovered_cell
 
 func _init():
 	add_to_group("map")
@@ -21,11 +21,11 @@ func update_map():
 
 
 func _draw():
-	var clicked_cell = map_to_local(local_to_map(get_local_mouse_position()))
+	hovered_cell = local_to_map(get_local_mouse_position())
 	var hover_color = Color.BLACK
 	hover_color.a = 0.10
 	draw_polygon(
-		PackedVector2Array(get_tile_boundaries(clicked_cell)),
+		PackedVector2Array(get_tile_boundaries(map_to_local(hovered_cell))),
 		PackedColorArray(
 			[hover_color],
 		)
