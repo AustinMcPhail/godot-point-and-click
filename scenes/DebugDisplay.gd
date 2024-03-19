@@ -18,4 +18,4 @@ func _ready():
 
 func _process(delta):
 	global_coords.text = "Global: " + str(homeworld.tile_map.get_local_mouse_position())
-	tile_coords.text = "Tile: " + str(homeworld.tile_map.hovered_cell)
+	tile_coords.text = "Tile: " + str(homeworld.tile_map.local_to_map(homeworld.tile_map.get_local_mouse_position()))

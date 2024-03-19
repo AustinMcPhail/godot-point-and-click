@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://derqex2dbi66f" path="res://assets/tileset/PNG/spr_terrains.png" id="1_hi7ex"]
 [ext_resource type="PackedScene" uid="uid://c6grvodaag2ow" path="res://scenes/Tree.tscn" id="2_a3yd4"]
-[ext_resource type="Script" path="res://scripts/Map.gd" id="3_b0vss"]
+[ext_resource type="Script" path="res://scripts/Chunk.gd" id="3_hpfnr"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xnpel"]
 texture = ExtResource("1_hi7ex")
@@ -843,7 +843,7 @@ layer_1/y_sort_enabled = true
 layer_1/y_sort_origin = 0
 layer_1/z_index = 0
 layer_1/tile_data = PackedInt32Array()
-script = ExtResource("3_b0vss")
+script = ExtResource("3_hpfnr")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 z_index = 4096

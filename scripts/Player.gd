@@ -39,13 +39,13 @@ func _input(event):
 				camera.zoom = Vector2(max(camera.zoom.x - 1, 2), max(camera.zoom.y - 1, 2))
 				current_zoom = camera.zoom
 				current_offset = camera.offset
-		if (!context_menu_entered):
-			if Input.is_action_just_pressed("LeftMouse"):
-				handle_move_to(get_global_mouse_position())
-		if Input.is_action_just_pressed("Inventory"):
-			inventory.list_items()
-		if Input.is_action_just_pressed("Player"):
-			skills.list_skills()
+	if (!context_menu_entered):
+		if Input.is_action_just_pressed("LeftMouse"):
+			handle_move_to(get_global_mouse_position())
+	if Input.is_action_just_pressed("Inventory"):
+		inventory.list_items()
+	if Input.is_action_just_pressed("Player"):
+		skills.list_skills()
 			
 	if Input.is_action_just_pressed("Map"):
 		show_map = !show_map
