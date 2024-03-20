@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://0w7t4sh3gcqx"]
+[gd_scene load_steps=10 format=3 uid="uid://0w7t4sh3gcqx"]
 
 [ext_resource type="Script" path="res://scripts/Homeworld.gd" id="1_yesp3"]
 [ext_resource type="Script" path="res://scenes/Chunkloader.gd" id="2_tq71i"]
@@ -9,13 +9,13 @@
 [ext_resource type="PackedScene" uid="uid://dwkubucv404mr" path="res://scenes/Pointer.tscn" id="7_n5s70"]
 [ext_resource type="Script" path="res://scripts/Hover.gd" id="8_5wu6v"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_03ju6"]
+bg_color = Color(0, 0, 0, 0.313726)
+
 [node name="Homeworld" type="Node2D" groups=["homeworld"]]
 script = ExtResource("1_yesp3")
 alt_freq = 0.01
 map_size_in_chunks = 3
-
-[node name="Chunkloader" type="Node2D" parent="."]
-script = ExtResource("2_tq71i")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -26,16 +26,21 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("3_35nx2")
 
+[node name="Chunkloader" type="Node2D" parent="."]
+script = ExtResource("2_tq71i")
+
 [node name="Player" parent="." instance=ExtResource("5_a065t")]
 
 [node name="Path" type="Node2D" parent="."]
 script = ExtResource("5_wa5j5")
 
-[node name="TileMap" parent="." instance=ExtResource("6_nlj8o")]
-script = null
-
 [node name="Hover" type="Panel" parent="."]
 z_as_relative = false
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_03ju6")
 script = ExtResource("8_5wu6v")
+
+[node name="TileMap" parent="." instance=ExtResource("6_nlj8o")]
+script = null
