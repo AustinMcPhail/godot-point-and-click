@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://0w7t4sh3gcqx"]
+[gd_scene load_steps=9 format=3 uid="uid://0w7t4sh3gcqx"]
 
 [ext_resource type="Script" path="res://scripts/Homeworld.gd" id="1_yesp3"]
 [ext_resource type="Script" path="res://scenes/Chunkloader.gd" id="2_tq71i"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/Path.gd" id="5_wa5j5"]
 [ext_resource type="PackedScene" uid="uid://dlnsytxfsj5t7" path="res://chunk.tscn" id="6_nlj8o"]
 [ext_resource type="PackedScene" uid="uid://dwkubucv404mr" path="res://scenes/Pointer.tscn" id="7_n5s70"]
+[ext_resource type="Script" path="res://scripts/Hover.gd" id="8_5wu6v"]
 
 [node name="Homeworld" type="Node2D" groups=["homeworld"]]
 script = ExtResource("1_yesp3")
@@ -32,3 +33,9 @@ script = ExtResource("5_wa5j5")
 
 [node name="TileMap" parent="." instance=ExtResource("6_nlj8o")]
 script = null
+
+[node name="Hover" type="Panel" parent="."]
+z_as_relative = false
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("8_5wu6v")

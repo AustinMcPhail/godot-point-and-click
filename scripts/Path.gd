@@ -14,7 +14,10 @@ func _draw():
 	if !player.target_pos:
 		return
 		
-	draw_polyline(player.current_point_path, Color.REBECCA_PURPLE)
+	draw_polyline(
+		player.current_point_path, 
+		Color.REBECCA_PURPLE
+	)
 	var target_tile_bounds = Chunk.get_tile_boundaries(player.target_pos)
 	target_tile_bounds.append(target_tile_bounds.front())
 	draw_polyline(

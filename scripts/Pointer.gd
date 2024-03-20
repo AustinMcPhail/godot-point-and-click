@@ -9,10 +9,14 @@ var hovered = null
 @onready var label: ContextLabel = $"ContextLabel"
 @onready var menu: ContextMenu = $"ContextMenu"
 
+
+var homeworld: Homeworld
+
 var context_menu_entered: Signal
 var context_menu_exited: Signal
 
 func _ready():
+	homeworld = get_tree().get_first_node_in_group("homeworld")
 	context_menu_entered = menu.mouse_entered
 	context_menu_exited = menu.mouse_exited
 

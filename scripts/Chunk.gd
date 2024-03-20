@@ -4,12 +4,18 @@ extends Node
 var coords: Vector2
 var tiles = {}
 var tile_walkable = {}
+var panel: PanelContainer
+var label: Label
 
-#@onready var label = $"PanelContainer/Label"
+func _init():
+	panel = PanelContainer.new()
+	label = Label.new()
+	panel.add_child(label)
+	add_child(label)
 
 func set_coords(chunk_coords: Vector2):
 	coords = chunk_coords
-#	label.text = str(chunk_coords)
+	label.text = str(chunk_coords)
 
 func set_tile(tile_coords: Vector2, tile_data):
 	tiles[tile_coords] = tile_data
