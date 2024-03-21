@@ -8,8 +8,6 @@ extends Node2D
 @export var max_map_height_in_chunks : int = 5
 @export var max_map_width_in_chunks : int = 10
 
-
-
 @export var seed: String = ""
 @export var noise_height_texture: NoiseTexture2D
 var noise: Noise
@@ -112,8 +110,8 @@ func _ready():
 
 func generate_world(in_range: int):
 	var player_tile = tile_map.local_to_map(player.position)
-	var chunk_x = floor(player_tile.x / 15.0)
-	var chunk_y = floor(player_tile.y / 15.0)
+	var chunk_x = floor(player_tile.x / float(chunk_size))
+	var chunk_y = floor(player_tile.y / float(chunk_size))
 	var current_chunk = Vector2(chunk_x, chunk_y)
 	if player_chunk == current_chunk:
 		return
