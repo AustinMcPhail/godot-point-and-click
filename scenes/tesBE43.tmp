@@ -1,0 +1,55 @@
+[gd_scene load_steps=10 format=3 uid="uid://0w7t4sh3gcqx"]
+
+[ext_resource type="Script" path="res://scripts/Homeworld.gd" id="1_yesp3"]
+[ext_resource type="Script" path="res://scenes/Chunkloader.gd" id="2_tq71i"]
+[ext_resource type="Script" path="res://scenes/DebugDisplay.gd" id="3_35nx2"]
+[ext_resource type="PackedScene" uid="uid://dw82qhmkyitot" path="res://scenes/Player.tscn" id="5_a065t"]
+[ext_resource type="Script" path="res://scripts/Path.gd" id="5_wa5j5"]
+[ext_resource type="PackedScene" uid="uid://dlnsytxfsj5t7" path="res://chunk.tscn" id="6_nlj8o"]
+[ext_resource type="PackedScene" uid="uid://dwkubucv404mr" path="res://scenes/Pointer.tscn" id="7_n5s70"]
+[ext_resource type="Script" path="res://scripts/Hover.gd" id="8_5wu6v"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_03ju6"]
+bg_color = Color(0, 0, 0, 0.313726)
+
+[node name="Homeworld" type="Node2D" groups=["homeworld"]]
+script = ExtResource("1_yesp3")
+seed = "test"
+alt_freq = null
+oct = null
+lac = null
+gain = null
+amplitude = null
+chunk_size = null
+map_size_in_chunks = 2
+render_distance_in_chunks = null
+max_map_height_in_chunks = 3
+max_map_width_in_chunks = 3
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Pointer" parent="CanvasLayer" groups=["pointer"] instance=ExtResource("7_n5s70")]
+
+[node name="DebugDisplay" type="VBoxContainer" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_35nx2")
+
+[node name="Chunkloader" type="Node2D" parent="."]
+script = ExtResource("2_tq71i")
+
+[node name="Player" parent="." instance=ExtResource("5_a065t")]
+
+[node name="Path" type="Node2D" parent="."]
+script = ExtResource("5_wa5j5")
+
+[node name="Hover" type="Panel" parent="."]
+z_as_relative = false
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_03ju6")
+script = ExtResource("8_5wu6v")
+
+[node name="TileMap" parent="." instance=ExtResource("6_nlj8o")]
+script = null

@@ -14,8 +14,8 @@ bg_color = Color(0, 0, 0, 0.313726)
 
 [node name="Homeworld" type="Node2D" groups=["homeworld"]]
 script = ExtResource("1_yesp3")
-alt_freq = 0.01
-map_size_in_chunks = 3
+seed = "test"
+map_size_in_chunks = 2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
