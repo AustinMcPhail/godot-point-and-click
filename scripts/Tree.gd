@@ -107,6 +107,9 @@ func stop():
 	
 func is_started():
 	return player_is_doing_action
+
+func get_tile_position():
+	return homeworld.tile_map.local_to_map(position)
 	
 func hit(damage: int, critical_hit = false):
 	if (critical_hit):

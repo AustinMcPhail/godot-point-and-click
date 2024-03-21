@@ -76,8 +76,11 @@ func _physics_process(delta):
 
 	if current_id_path.is_empty():
 		if action_node != null and !action_node.is_started():
-			sprite.update_animation_direction(action_node.position)
-			action_node.start()
+			if get_tile_position().distance_to(action_node.get_tile_position()) <= 1:
+				sprite.update_animation_direction(action_node.position)
+				action_node.start()
+			else:
+				print("Can't reach!")
 		return
 	if (target_pos == Vector2.ZERO):
 		target_pos = homeworld.tile_map.map_to_local(current_id_path.front())	
@@ -149,3 +152,6 @@ func stop_actions():
 func complete_action(exp: Dictionary, result: Dictionary):
 	skills.add_exp(exp)
 	inventory.add_items(result);
+
+func get_tile_position() -> Vector2:
+	return homeworld.tile_map.local_to_map(position)
