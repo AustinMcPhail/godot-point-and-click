@@ -40,7 +40,6 @@ bg_color = Color(0, 0, 0, 0.313726)
 [node name="Homeworld" type="Node2D" groups=["homeworld"]]
 script = ExtResource("1_yesp3")
 render_distance_in_chunks = 2
-seed = "test"
 noise_height_texture = SubResource("NoiseTexture2D_6phme")
 tree_noise_height_texture = SubResource("NoiseTexture2D_6gibm")
 

@@ -10,7 +10,7 @@ extends Node2D
 
 
 
-@export var seed = "Hello World"
+@export var seed: String = ""
 @export var noise_height_texture: NoiseTexture2D
 var noise: Noise
 @export var tree_noise_height_texture: NoiseTexture2D
@@ -91,17 +91,24 @@ func _init():
 	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
 
 func _ready():
+	if seed == "":
+		seed = Time.get_datetime_string_from_system()
 	noise = noise_height_texture.noise
 	noise.seed = seed.hash()
 	tree_noise = tree_noise_height_texture.noise
 	tree_noise.seed = seed.hash()
-	var spawn_tile = Vector2(8, 8)
-	var spawn_tile_in_chunk_pos = Vector2.ZERO + Vector2(
-		floor(chunk_size / 2),
-		floor(chunk_size / 2)
-	)
-	player.position = tile_map.map_to_local(spawn_tile_in_chunk_pos)
 	generate_world(initial_map_size_in_chunks)
+
+	var spawn_tile
+	while spawn_tile == null:
+		var tile = grass_tiles[randi_range(0, grass_tiles.size() - 1)]
+		var tile_data = tile_map.get_cell_tile_data(ground_layer_1, tile)
+		var environment_tile = tile_map.get_cell_alternative_tile(environment_layer, tile)
+		print(environment_tile)
+		if tile_data.get_custom_data("walkable") == true && environment_tile == -1:
+			spawn_tile = tile
+
+	player.position = tile_map.map_to_local(spawn_tile)
 
 func generate_world(in_range: int):
 	var player_tile = tile_map.local_to_map(player.position)
