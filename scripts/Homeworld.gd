@@ -2,19 +2,16 @@ class_name Homeworld
 
 extends Node2D
 
-@export var seed = ""
-@export var alt_freq: float = 0.005
-const MAX_FREQ = 0.005
-@export var oct : int = 4
-@export var lac : float = 3
-@export var gain : float = 0.5
-@export var amplitude : float = 1.0
 @export var chunk_size : int = 15
-@export var map_size_in_chunks : int = 1
 @export var render_distance_in_chunks : int = 1
-
 @export var max_map_height_in_chunks : int = 5
 @export var max_map_width_in_chunks : int = 10
+
+
+
+@export var seed = "Hello World"
+@export var noise_height_texture: NoiseTexture2D
+var noise: Noise
 
 var spawn_chunk: Vector2 = Vector2.ZERO
 var current_chunk
@@ -27,9 +24,27 @@ var tile_map_layer = 0
 
 var spawn_chunk_candidates = []
 
-var DIRT_CELLS = [Vector2i(14, 1),Vector2i(14, 2),Vector2i(14, 3),Vector2i(14, 4)]
+var source_id = 2
+
+var DIRT_CELLS = [Vector2i(29, 1),Vector2i(29, 2),Vector2i(29, 3),Vector2i(29, 4)]
 var GRASS_CELLS = [Vector2i(27, 6),Vector2i(27, 7),Vector2i(27, 8),Vector2i(27, 9)]
+var SAND_CELLS = [Vector2i(14, 1),Vector2i(14, 2),Vector2i(14, 3),Vector2i(14, 4)]
 var WATER_CELLS = [Vector2i(11, 19),Vector2i(12, 19),Vector2i(13, 19),Vector2i(14, 19)]
+
+var water_tiles = []
+var grass_terrain_id = 0
+var grass_tiles = []
+var sand_terrain_id = 1
+var sand_tiles = []
+var dirt_tiles = []
+
+# Layers
+var water_layer = 0
+var ground_layer_1 = 1
+var ground_layer_2 = 2
+var cliff_layer_1 = 3
+var trees_layer = 4
+var environment_layer = 5
 
 var player_chunk
 
@@ -63,51 +78,42 @@ func get_chunk_data(coords):
 	return chunk_data
 	
 func _process(delta):
-	set_loaded_tiles()
+#	set_loaded_tiles()
+	pass
 	
 func _init():
+	position = Vector2.ZERO;
 	grid.cell_size = Vector2(16, 16)
 	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
 
 func _ready():
-	altitude_seed = seed.hash()
-	trees_seed = seed.hash()
-	for cx in range(-max_map_height_in_chunks, max_map_height_in_chunks):
-		for cy in range(-max_map_width_in_chunks, max_map_width_in_chunks):
-				var min = 3
-				var distance_from_center = Vector2.ZERO.distance_to(Vector2(cx, cy))
-				var freq = min((distance_from_center / 3) / 100, MAX_FREQ)
-				
-				generate_map(altitude, "alt", cx, cy, altitude_seed, freq, oct, lac, gain, FastNoiseLite.FRACTAL_FBM, FastNoiseLite.TYPE_PERLIN)
-				generate_map(trees, "trees", cx, cy, trees_seed, 0.01, oct, 10, gain, FastNoiseLite.FRACTAL_PING_PONG, FastNoiseLite.TYPE_SIMPLEX)
-	
-	position = Vector2.ZERO
-	load_chunk(0, 0)
-	var spawn_tile = Vector2(
-		8, 8 
-	)
+	noise = noise_height_texture.noise
+	noise.seed = seed.hash()
+	var spawn_tile = Vector2(8, 8)
 	var spawn_tile_in_chunk_pos = Vector2.ZERO + Vector2(
 		floor(chunk_size / 2),
 		floor(chunk_size / 2)
 	)
 	player.position = tile_map.map_to_local(spawn_tile_in_chunk_pos)
+	generate_world()
 
-func generate_map(map, label, cx, cy, noise_seed, frequency, octaves, lacunarity, gain, fractal_type, noise_type):
-	var noise_map = FastNoiseLite.new()
-	noise_map.fractal_type = fractal_type
-	noise_map.noise_type = noise_type
-	noise_map.seed = noise_seed
-	noise_map.frequency = frequency
-	noise_map.fractal_octaves = octaves
-	noise_map.fractal_lacunarity = lacunarity
-	noise_map.fractal_gain = gain
-	
-	noise_map.get_image(500, 500).save_jpg("/" + label + ".jpg")
-
-	for tx in chunk_size:
-		for ty in chunk_size:
-			var rand = abs(noise_map.get_noise_2d(tx + (cx * chunk_size), ty + (cy * chunk_size)) * 2 - 1)
-			map[Vector2(tx + (cx * chunk_size), ty + (cy * chunk_size))] = rand;
+func generate_world():
+	var noise_val_arr = []
+	for cx in range(-max_map_height_in_chunks, max_map_height_in_chunks):
+		for cy in range(-max_map_width_in_chunks, max_map_width_in_chunks):
+			for tx in chunk_size:
+				for ty in chunk_size:
+					var pos = Vector2(tx + (cx * chunk_size), ty + (cy * chunk_size));
+					var noise_value = noise.get_noise_2d(pos.x, pos.y)
+					noise_val_arr.append(noise_value)
+					altitude[pos] = noise_value;
+					if noise_value >= 0.0:
+						if noise_value > 0.02:
+							grass_tiles.append(pos)
+						sand_tiles.append(pos)
+					tile_map.set_cell(water_layer, pos, source_id, WATER_CELLS[0])
+	tile_map.set_cells_terrain_connect(ground_layer_1, sand_tiles, sand_terrain_id, 0)
+	tile_map.set_cells_terrain_connect(ground_layer_2, grass_tiles, grass_terrain_id, 0)
 
 func load_chunk(cx, cy):
 	var chunk = Chunk.new()
@@ -121,11 +127,13 @@ func load_chunk(cx, cy):
 				continue
 			var alt = altitude[pos]
 			chunk.set_tile_walkable(pos, true)
-			if alt < 0.75:
+			if alt < 0.0:
 				spawn_chunk_candidate = false
 				tile_data.append([0, pos, 2, WATER_CELLS[randi_range(0, WATER_CELLS.size() - 1)]])
 				chunk.set_tile_walkable(pos, false)
-			elif alt > 1.5:
+			elif alt > 0.0 && alt < 0.02:
+				tile_data.append([0, pos, 2, SAND_CELLS[randi_range(0, SAND_CELLS.size() - 1)]])				
+			elif alt > 0.4 && alt < 0.45:
 				tile_data.append([0, pos, 2, DIRT_CELLS[randi_range(0, DIRT_CELLS.size() - 1)]])
 			else:
 				if (has_tree(pos)):
@@ -151,7 +159,7 @@ func set_loaded_tiles():
 	current_chunk = _current_chunk
 	var loaded = [current_chunk]
 	var adjacent_chunk_pos = [current_chunk.coords]
-	var render_range = 2
+	var render_range = render_distance_in_chunks
 	for w in range(render_range):
 		for h in range(render_range):
 			var top_left = Vector2(current_chunk.coords.x - w, current_chunk.coords.y - h)
@@ -202,4 +210,4 @@ func set_loaded_tiles():
 func has_tree(pos):
 	if !trees.has(pos):
 		return false
-	return trees[pos] < 0.25
+	return trees[pos] > 0.1 && trees[pos] < 0.11 
