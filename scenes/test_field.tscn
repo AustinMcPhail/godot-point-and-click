@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://clol2uqhbnx40"]
+[gd_scene load_steps=16 format=3 uid="uid://clol2uqhbnx40"]
 
 [ext_resource type="Script" path="res://scripts/Homeworld.gd" id="1_yesp3"]
 [ext_resource type="Script" path="res://scenes/Chunkloader.gd" id="2_tq71i"]
@@ -21,13 +21,28 @@ noise_type = 3
 color_ramp = SubResource("Gradient_yo3dv")
 noise = SubResource("FastNoiseLite_kk3bu")
 
+[sub_resource type="Gradient" id="Gradient_8fdsn"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.246667)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ew0em"]
+frequency = 0.0085
+fractal_type = 2
+domain_warp_enabled = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6gibm"]
+color_ramp = SubResource("Gradient_8fdsn")
+noise = SubResource("FastNoiseLite_ew0em")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_03ju6"]
 bg_color = Color(0, 0, 0, 0.313726)
 
 [node name="Homeworld" type="Node2D" groups=["homeworld"]]
 script = ExtResource("1_yesp3")
+render_distance_in_chunks = 2
 seed = "test"
 noise_height_texture = SubResource("NoiseTexture2D_6phme")
+tree_noise_height_texture = SubResource("NoiseTexture2D_6gibm")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
