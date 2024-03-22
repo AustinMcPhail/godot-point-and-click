@@ -13,6 +13,7 @@ var EXP_PER_ACTION = {Woodcutting.NAME: 10.0}
 var RESULT_PER_ACTION = {"log": 1}
 var BASE_CHANCE_TO_FAIL_ACTION = 20.0
 
+var player_speech
 var player: Player
 var pointer: Pointer
 var homeworld: Homeworld
@@ -26,6 +27,7 @@ var cursor = Input.CURSOR_POINTING_HAND
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	player_speech = get_tree().get_first_node_in_group("player_speech")
 	player = get_tree().get_first_node_in_group("player")
 	pointer = get_tree().get_first_node_in_group("pointer")
 	homeworld = get_tree().get_first_node_in_group("homeworld")
@@ -125,7 +127,7 @@ func chop():
 	player.move_to_and_perform_action(self)
 	
 func examine():
-	print("It is a tree.")
+	player_speech.say("It is a tree.")
 
 func get_context_menu():
 	return [

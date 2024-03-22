@@ -15,7 +15,6 @@ var action_node
 var camera: Camera2D
 var homeworld: Homeworld
 var pointer: Pointer
-var context_menu_entered = false
 var current_zoom = Vector2(8, 8)
 var current_offset: Vector2
 
@@ -26,8 +25,6 @@ func _ready():
 	pointer = get_tree().get_first_node_in_group("pointer")
 	camera.zoom = current_zoom
 	current_offset = camera.offset
-	pointer.context_menu_entered.connect(func(): context_menu_entered = true)
-	pointer.context_menu_exited.connect(func(): context_menu_entered = false)
 
 func _unhandled_input(event):
 	if !show_map:
@@ -40,9 +37,8 @@ func _unhandled_input(event):
 				camera.zoom = Vector2(max(camera.zoom.x - 1, 2), max(camera.zoom.y - 1, 2))
 				current_zoom = camera.zoom
 				current_offset = camera.offset
-	if (!context_menu_entered):
-		if Input.is_action_just_pressed("LeftMouse"):
-			handle_move_to(get_global_mouse_position())
+	if Input.is_action_just_pressed("LeftMouse"):
+		handle_move_to(get_global_mouse_position())
 	if Input.is_action_just_pressed("Inventory"):
 		inventory.list_items()
 	if Input.is_action_just_pressed("Player"):
@@ -98,9 +94,8 @@ func _physics_process(delta):
 			current_point_path = []
 
 func move_to_and_perform_action(node: Node2D):
-	if (!context_menu_entered):
-		handle_move_to(node.position)
-		action_node = node
+	handle_move_to(node.position)
+	action_node = node
 	
 func handle_move_to(position: Vector2):
 	pointer.close_context_menu()

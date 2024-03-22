@@ -12,7 +12,7 @@ func _input(event):
 
 func add_item(label: String, callable: Callable):
 	var button = Button.new()
-	button.mouse_filter = Control.MOUSE_FILTER_PASS
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
 	button.text = label
 	button.pressed.connect(
 		func():

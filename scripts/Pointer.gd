@@ -6,9 +6,8 @@ var can_interact = false
 var last_hover
 var hovered = null
 
-@onready var label: ContextLabel = $"ContextLabel"
-@onready var menu: ContextMenu = $"ContextMenu"
-
+@onready var label = $"../ContextLabel"
+@onready var menu = $"../ContextMenu"
 
 var homeworld: Homeworld
 
@@ -41,7 +40,7 @@ func clear_hovered(node):
 	
 func open_context_menu(node, position):
 	menu.clear()
-	menu.position = position;
+	menu.position = get_global_mouse_position();
 	for menu_item in node.get_context_menu():
 		menu.add_item(menu_item[0], menu_item[1])
 	menu.show()

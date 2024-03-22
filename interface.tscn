@@ -1,12 +1,15 @@
-[gd_scene load_steps=20 format=3 uid="uid://btbt4ei36u0l0"]
+[gd_scene load_steps=24 format=3 uid="uid://btbt4ei36u0l0"]
 
 [ext_resource type="Script" path="res://interface.gd" id="1_br545"]
-[ext_resource type="PackedScene" uid="uid://dwkubucv404mr" path="res://scenes/Pointer.tscn" id="1_uq0yw"]
+[ext_resource type="Script" path="res://scripts/Pointer.gd" id="2_b2j7n"]
 [ext_resource type="Script" path="res://scenes/DebugDisplay.gd" id="2_jbyox"]
 [ext_resource type="Theme" uid="uid://rq1y0rafjg1o" path="res://ui_theme.tres" id="3_fodo3"]
 [ext_resource type="Texture2D" uid="uid://dmtvuadtvjp37" path="res://assets/tileset/MV Icons Map Icons - ALL.png" id="3_q6oc5"]
 [ext_resource type="Texture2D" uid="uid://ydoqj4kwlld5" path="res://assets/kenny/uipack_rpg_sheet.png" id="4_b1y0v"]
 [ext_resource type="Script" path="res://Inventory.gd" id="5_j81iy"]
+[ext_resource type="Script" path="res://PlayerSpeech.gd" id="8_xbooe"]
+[ext_resource type="Script" path="res://scripts/ContextLabel.gd" id="9_xpf4x"]
+[ext_resource type="Script" path="res://scripts/ContextMenu.gd" id="10_2e6ov"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mmha7"]
 bg_color = Color(0, 0, 0, 0.0980392)
@@ -64,10 +67,29 @@ region = Rect2(32, 128, 32, 32)
 atlas = ExtResource("3_q6oc5")
 region = Rect2(256, 128, 32, 32)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d50xx"]
+bg_color = Color(0.168627, 0.168627, 0.168627, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 5.0
+expand_margin_top = 2.0
+expand_margin_right = 5.0
+expand_margin_bottom = 2.0
+shadow_color = Color(0, 0, 0, 0.419608)
+shadow_size = 5
+shadow_offset = Vector2(2, 4)
+
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource("1_br545")
 
-[node name="Pointer" parent="." groups=["pointer"] instance=ExtResource("1_uq0yw")]
+[node name="Pointer" type="Node2D" parent="." groups=["pointer"]]
+script = ExtResource("2_b2j7n")
 
 [node name="DebugDisplay" type="VBoxContainer" parent="."]
 offset_right = 40.0
@@ -195,3 +217,44 @@ theme = SubResource("Theme_b3ejx")
 icon = SubResource("AtlasTexture_y7je7")
 icon_alignment = 1
 expand_icon = true
+
+[node name="PlayerSpeech" type="PanelContainer" parent="." groups=["player_speech"]]
+z_index = 4096
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -45.0
+offset_top = -105.0
+offset_right = 45.0
+offset_bottom = -29.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_fodo3")
+script = ExtResource("8_xbooe")
+
+[node name="Label" type="Label" parent="PlayerSpeech"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Sample"
+
+[node name="ContextLabel" type="PanelContainer" parent="."]
+offset_left = 4.0
+offset_top = -40.0
+offset_right = 41.0
+offset_bottom = -12.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_d50xx")
+script = ExtResource("9_xpf4x")
+
+[node name="Label" type="Label" parent="ContextLabel"]
+layout_mode = 2
+text = "Tree"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ContextMenu" type="GridContainer" parent="."]
+offset_top = 48.0
+offset_right = 40.0
+offset_bottom = 88.0
+script = ExtResource("10_2e6ov")
