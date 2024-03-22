@@ -1,0 +1,197 @@
+[gd_scene load_steps=20 format=3 uid="uid://btbt4ei36u0l0"]
+
+[ext_resource type="Script" path="res://interface.gd" id="1_br545"]
+[ext_resource type="PackedScene" uid="uid://dwkubucv404mr" path="res://scenes/Pointer.tscn" id="1_uq0yw"]
+[ext_resource type="Script" path="res://scenes/DebugDisplay.gd" id="2_jbyox"]
+[ext_resource type="Theme" uid="uid://rq1y0rafjg1o" path="res://ui_theme.tres" id="3_fodo3"]
+[ext_resource type="Texture2D" uid="uid://dmtvuadtvjp37" path="res://assets/tileset/MV Icons Map Icons - ALL.png" id="3_q6oc5"]
+[ext_resource type="Texture2D" uid="uid://ydoqj4kwlld5" path="res://assets/kenny/uipack_rpg_sheet.png" id="4_b1y0v"]
+[ext_resource type="Script" path="res://Inventory.gd" id="5_j81iy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mmha7"]
+bg_color = Color(0, 0, 0, 0.0980392)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="Theme" id="Theme_j2xgb"]
+Button/styles/normal = SubResource("StyleBoxFlat_mmha7")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_832a2"]
+atlas = ExtResource("4_b1y0v")
+region = Rect2(0, 188, 190, 49)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ylkg1"]
+texture = SubResource("AtlasTexture_832a2")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0o2cl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1cy70"]
+corner_radius_top_left = 1024
+corner_radius_top_right = 1024
+corner_radius_bottom_right = 1024
+corner_radius_bottom_left = 1024
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aj1qh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cu431"]
+bg_color = Color(0, 0, 0, 0.490196)
+corner_radius_top_left = 1024
+corner_radius_top_right = 1024
+corner_radius_bottom_right = 1024
+corner_radius_bottom_left = 1024
+
+[sub_resource type="Theme" id="Theme_b3ejx"]
+Button/styles/focus = SubResource("StyleBoxEmpty_0o2cl")
+Button/styles/hover = SubResource("StyleBoxFlat_1cy70")
+Button/styles/normal = SubResource("StyleBoxEmpty_aj1qh")
+Button/styles/pressed = SubResource("StyleBoxFlat_cu431")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yckxv"]
+atlas = ExtResource("3_q6oc5")
+region = Rect2(288, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pls75"]
+atlas = ExtResource("3_q6oc5")
+region = Rect2(32, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y7je7"]
+atlas = ExtResource("3_q6oc5")
+region = Rect2(256, 128, 32, 32)
+
+[node name="CanvasLayer" type="CanvasLayer"]
+script = ExtResource("1_br545")
+
+[node name="Pointer" parent="." groups=["pointer"] instance=ExtResource("1_uq0yw")]
+
+[node name="DebugDisplay" type="VBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_jbyox")
+
+[node name="InventoryPanel" type="PanelContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1656.0
+offset_top = 688.0
+offset_right = -4.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_fodo3")
+
+[node name="GridContainer" type="GridContainer" parent="InventoryPanel"]
+layout_mode = 2
+columns = 3
+script = ExtResource("5_j81iy")
+
+[node name="Button1" type="Button" parent="InventoryPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Button2" type="Button" parent="InventoryPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Button3" type="Button" parent="InventoryPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Button4" type="Button" parent="InventoryPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Button5" type="Button" parent="InventoryPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Button6" type="Button" parent="InventoryPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Button7" type="Button" parent="InventoryPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Button8" type="Button" parent="InventoryPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Button9" type="Button" parent="InventoryPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Buttons" type="PanelContainer" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -264.0
+offset_top = -100.0
+offset_right = -5.0
+offset_bottom = -4.0
+grow_horizontal = 0
+grow_vertical = 0
+theme = ExtResource("3_fodo3")
+theme_override_styles/panel = SubResource("StyleBoxTexture_ylkg1")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Buttons"]
+layout_mode = 2
+
+[node name="Inventory" type="Button" parent="Buttons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+tooltip_text = "Inventory"
+mouse_default_cursor_shape = 2
+theme = SubResource("Theme_b3ejx")
+icon = SubResource("AtlasTexture_yckxv")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Rations" type="Button" parent="Buttons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+tooltip_text = "Inventory"
+mouse_default_cursor_shape = 2
+theme = SubResource("Theme_b3ejx")
+icon = SubResource("AtlasTexture_pls75")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Proficiencies" type="Button" parent="Buttons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+tooltip_text = "Inventory"
+mouse_default_cursor_shape = 2
+theme = SubResource("Theme_b3ejx")
+icon = SubResource("AtlasTexture_y7je7")
+icon_alignment = 1
+expand_icon = true

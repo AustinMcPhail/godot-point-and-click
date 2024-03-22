@@ -12,7 +12,7 @@ var target_pos: Vector2 = Vector2.ZERO
 var action_node
 @onready var inventory: Inventory = $"Inventory"
 @onready var sprite: PlayerSprite = $"PlayerSprite"
-@onready var camera: Camera2D = $"Camera2D"
+var camera: Camera2D
 var homeworld: Homeworld
 var pointer: Pointer
 var context_menu_entered = false
@@ -21,14 +21,15 @@ var current_offset: Vector2
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	homeworld = get_tree().get_first_node_in_group("homeworld")
+	camera = get_tree().get_first_node_in_group("camera")
+	pointer = get_tree().get_first_node_in_group("pointer")
 	camera.zoom = current_zoom
 	current_offset = camera.offset
-	homeworld = get_tree().get_first_node_in_group("homeworld")
-	pointer = get_tree().get_first_node_in_group("pointer")
 	pointer.context_menu_entered.connect(func(): context_menu_entered = true)
 	pointer.context_menu_exited.connect(func(): context_menu_entered = false)
 
-func _input(event):
+func _unhandled_input(event):
 	if !show_map:
 		if event is InputEventMouseButton:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
@@ -70,6 +71,7 @@ func _show_map():
 		camera.zoom = Vector2(y_ratio, y_ratio)
 
 func _physics_process(delta):
+	camera.position = position
 	if (show_map):
 		_show_map()
 	sprite.update_animation_state(current_id_path, target_pos)

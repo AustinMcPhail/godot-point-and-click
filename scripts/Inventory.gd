@@ -7,12 +7,15 @@ extends Node
 func add_items(_items: Dictionary):
 	if (_items == null || _items.is_empty()):
 		return
-		
+	
 	for _item in _items.keys():
 		if (items.has(_item)):
 			items[_item] = items[_item] + _items[_item]
 		else:
-			items[_item] = _items[_item]
+			if (items.keys().size() >= 9):
+				print("Inventory full!")
+			else:
+				items[_item] = _items[_item]
 
 func list_items():
 	if (items.keys().is_empty()):

@@ -1,0 +1,20 @@
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://rq1y0rafjg1o"]
+
+[ext_resource type="Texture2D" uid="uid://ydoqj4kwlld5" path="res://assets/kenny/uipack_rpg_sheet.png" id="1_s6g31"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a7d65"]
+atlas = ExtResource("1_s6g31")
+region = Rect2(0, 376, 100, 100)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_foct4"]
+content_margin_top = 25.0
+content_margin_bottom = 25.0
+texture = SubResource("AtlasTexture_a7d65")
+texture_margin_left = 16.0
+texture_margin_top = 16.0
+texture_margin_right = 16.0
+texture_margin_bottom = 16.0
+axis_stretch_vertical = 1
+
+[resource]
+PanelContainer/styles/panel = SubResource("StyleBoxTexture_foct4")

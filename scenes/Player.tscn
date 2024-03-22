@@ -194,9 +194,5 @@ libraries = {
 "player": SubResource("AnimationLibrary_w6t8y")
 }
 
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(8, 8)
-position_smoothing_enabled = true
-
-[node name="Inventory" type="Node" parent="."]
+[node name="Inventory" type="Node" parent="." groups=["inventory"]]
 script = ExtResource("4_wvgnp")

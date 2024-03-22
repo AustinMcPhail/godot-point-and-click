@@ -1,0 +1,6 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://cielax4s171x"]
+
+[ext_resource type="Texture2D" uid="uid://ydoqj4kwlld5" path="res://assets/kenny/uipack_rpg_sheet.png" id="1_4y1kj"]
+
+[resource]
+atlas = ExtResource("1_4y1kj")
