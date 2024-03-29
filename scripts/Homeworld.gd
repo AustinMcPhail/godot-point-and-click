@@ -25,30 +25,6 @@ var tile_map_layer = 0
 
 var spawn_chunk_candidates = []
 
-var source_id = 2
-var tree_source_id = 3
-
-var DIRT_CELLS = [Vector2i(29, 1),Vector2i(29, 2),Vector2i(29, 3),Vector2i(29, 4)]
-var GRASS_CELLS = [Vector2i(27, 6),Vector2i(27, 7),Vector2i(27, 8),Vector2i(27, 9)]
-var SAND_CELLS = [Vector2i(14, 1),Vector2i(14, 2),Vector2i(14, 3),Vector2i(14, 4)]
-var WATER_CELLS = [Vector2i(11, 19),Vector2i(12, 19),Vector2i(13, 19),Vector2i(14, 19)]
-
-var water_tiles = []
-var grass_terrain_id = 2
-var grass_tiles = []
-var sand_terrain_id = 1
-var sand_tiles = []
-var dirt_tiles = []
-var solid_cells = []
-
-# Layers
-var water_layer = 0
-var ground_layer_1 = 1
-var ground_layer_2 = 2
-var cliff_layer_1 = 3
-var trees_layer = 4
-var environment_layer = 5
-
 var player_chunk
 
 var loaded_coords = []
@@ -58,37 +34,22 @@ var loaded_chunks = []
 
 var tile_chunk_map = {}
 
-@onready var tile_map: TileMap = $"TileMap"
+@onready var map: Map = $"Map"
 @onready var player: Player = $"Player"
-@onready var chunk_loader: Chunkloader = $"Chunkloader"
 @onready var texture_rect: TextureRect = $"TextureRect"
-
-
-var grid: AStarGrid2D = AStarGrid2D.new()
 
 var altitude_seed
 var trees_seed
+var tile_map: TileMap
+var grid: AStarGrid2D
 
-func add_chunk(coords):
-	loaded_coords.append(coords)
-	chunk_data.append([])
-	
-func update_chunk(coords, chunk_data):
-	chunk_data[loaded_coords.find(coords)] = chunk_data
-
-func get_chunk_data(coords):
-	var found_chunk_data = chunk_data[loaded_coords.find(coords)]
-	return chunk_data
-	
-func _process(delta):
-	generate_world(render_distance_in_chunks)
-	
 func _init():
 	position = Vector2.ZERO;
-	grid.cell_size = Vector2(16, 16)
-	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
 
 func _ready():
+	tile_map = map.tile_map
+	grid = map.grid
+	
 	if seed == "":
 		seed = Time.get_datetime_string_from_system()
 	noise = noise_height_texture.noise
@@ -99,14 +60,28 @@ func _ready():
 
 	var spawn_tile
 	while spawn_tile == null:
-		var tile = grass_tiles[randi_range(0, grass_tiles.size() - 1)]
-		var tile_data = tile_map.get_cell_tile_data(ground_layer_1, tile)
-		var environment_tile = tile_map.get_cell_alternative_tile(environment_layer, tile)
+		var tile = map.grass_tiles[randi_range(0, map.grass_tiles.size() - 1)]
+		var tile_data = tile_map.get_cell_tile_data(map.ground_layer_1, tile)
+		var environment_tile = tile_map.get_cell_alternative_tile(map.environment_layer, tile)
 		print(environment_tile)
 		if tile_data.get_custom_data("walkable") == true && environment_tile == -1:
 			spawn_tile = tile
 
 	player.position = tile_map.map_to_local(spawn_tile)
+	
+func _process(delta):
+	generate_world(render_distance_in_chunks)
+	
+func add_chunk(coords):
+	loaded_coords.append(coords)
+	chunk_data.append([])
+	
+func update_chunk(coords, chunk_data):
+	chunk_data[loaded_coords.find(coords)] = chunk_data
+
+func get_chunk_data(coords):
+	var found_chunk_data = chunk_data[loaded_coords.find(coords)]
+	return chunk_data
 
 func generate_world(in_range: int):
 	var player_tile = tile_map.local_to_map(player.position)
@@ -122,8 +97,8 @@ func generate_world(in_range: int):
 		return
 	var noise_val_arr = []
 	var tree_noise_val_arr = []
-	grass_tiles = []
-	sand_tiles = []
+	map.grass_tiles = []
+	map.sand_tiles = []
 	for chunk in chunks_to_load:
 		for tx in chunk_size:
 			for ty in chunk_size:
@@ -136,19 +111,19 @@ func generate_world(in_range: int):
 				if noise_value >= 0.0:
 					if noise_value > 0.02:
 						if (has_tree(tree_noise_value)):
-							solid_cells.append(pos)
-							tile_map.set_cell(environment_layer, pos, tree_source_id, Vector2i.ZERO, 1)
-						grass_tiles.append(pos)
-					sand_tiles.append(pos)
+							map.solid_cells.append(pos)
+							tile_map.set_cell(map.environment_layer, pos, map.tree_source_id, Vector2i.ZERO, 1)
+						map.grass_tiles.append(pos)
+					map.sand_tiles.append(pos)
 				else:
-					solid_cells.append(pos)
-				tile_map.set_cell(water_layer, pos, source_id, WATER_CELLS[0])
+					map.solid_cells.append(pos)
+				tile_map.set_cell(map.water_layer, pos, map.source_id, map.WATER_CELLS[0])
 
-	tile_map.set_cells_terrain_connect(ground_layer_1, sand_tiles, sand_terrain_id, 0)
-	tile_map.set_cells_terrain_connect(ground_layer_2, grass_tiles, grass_terrain_id, 0)
+	tile_map.set_cells_terrain_connect(map.ground_layer_1, map.sand_tiles, map.sand_terrain_id, 0)
+	tile_map.set_cells_terrain_connect(map.ground_layer_2, map.grass_tiles, map.grass_terrain_id, 0)
 	grid.region = Rect2i(tile_map.get_used_rect().position, tile_map.get_used_rect().size)
 	grid.update()
-	for pos in solid_cells:
+	for pos in map.solid_cells:
 		grid.set_point_solid(pos)
 
 func get_chunks_to_load(current_chunk: Vector2, in_range: int):

@@ -1,5 +1,5 @@
 class_name Chunk
-extends Node
+extends TileMap
 
 var coords: Vector2
 var tiles = {}

@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://iig3gbtyhguc"]
+
+[ext_resource type="Script" path="res://scripts/Map.gd" id="1_3wr2m"]
+[ext_resource type="PackedScene" uid="uid://dybp70mt6sdkm" path="res://scenes/chunk.tscn" id="2_pp2n4"]
+
+[node name="Map" type="Node2D" groups=["map"]]
+script = ExtResource("1_3wr2m")
+
+[node name="TileMap" parent="." instance=ExtResource("2_pp2n4")]

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5nj1kfp0dahk"]
+
+[ext_resource type="Script" path="res://scripts/Hover.gd" id="1_jp6f8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_03ju6"]
+bg_color = Color(0, 0, 0, 0.313726)
+
+[node name="PointerHover" type="Panel"]
+z_as_relative = false
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_03ju6")
+script = ExtResource("1_jp6f8")

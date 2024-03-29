@@ -4,7 +4,7 @@ extends Node2D
 
 var can_interact = false
 var last_hover
-var hovered = null
+var hovered: Node2D = null
 
 @onready var label = $"../ContextLabel"
 @onready var menu = $"../ContextMenu"
@@ -27,7 +27,7 @@ func set_hovered(node):
 	if hovered == node:
 		return
 	hovered = node
-	if hovered != null && hovered.get_context_label:
+	if hovered != null && hovered.has_method("get_context_label"):
 		label.text = hovered.get_context_label()
 		label.show()
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dw82qhmkyitot"]
+[gd_scene load_steps=16 format=3 uid="uid://dw82qhmkyitot"]
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_10fmb"]
 [ext_resource type="Texture2D" uid="uid://cq2khe7otxw2v" path="res://assets/player/player.png" id="3_h5b2c"]
@@ -167,8 +167,14 @@ _data = {
 "run_right": SubResource("Animation_07fe8")
 }
 
-[node name="Player" type="Node2D" groups=["player"]]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kaxgo"]
+size = Vector2(16, 16)
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
 y_sort_enabled = true
+position = Vector2(8, 8)
+collision_layer = 3
+collision_mask = 3
 script = ExtResource("1_10fmb")
 skills = ExtResource("4_wlfmj")
 
@@ -196,3 +202,6 @@ libraries = {
 
 [node name="Inventory" type="Node" parent="." groups=["inventory"]]
 script = ExtResource("4_wvgnp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_kaxgo")

@@ -1,65 +1,46 @@
-extends TileMap
+class_name Map
 
-var chunk_coords = Vector2()
-var chunk_data = []
+extends Node2D
 
-var hovered_cell
-var pos: Vector2 = Vector2.ZERO
+var DIRT_CELLS = [Vector2i(29, 1),Vector2i(29, 2),Vector2i(29, 3),Vector2i(29, 4)]
+var GRASS_CELLS = [Vector2i(27, 6),Vector2i(27, 7),Vector2i(27, 8),Vector2i(27, 9)]
+var SAND_CELLS = [Vector2i(14, 1),Vector2i(14, 2),Vector2i(14, 3),Vector2i(14, 4)]
+var WATER_CELLS = [Vector2i(11, 19),Vector2i(12, 19),Vector2i(13, 19),Vector2i(14, 19)]
 
-@onready var container: PanelContainer = $"PanelContainer"
-@onready var label: Label = $"PanelContainer/Label"
+var water_tiles = []
+var grass_terrain_id = 2
+var grass_tiles = []
+var sand_terrain_id = 1
+var sand_tiles = []
+var dirt_tiles = []
+var solid_cells = []
 
-func start(_chunk_coords):
-	chunk_coords = _chunk_coords
-	label.text = str(chunk_coords)
-	if Homeworld.loaded_coords.find(chunk_coords) == -1:
-		Homeworld.add_chunk(chunk_coords)
-	else:
-		chunk_data = Homeworld.get_chunk_data(chunk_coords)
+var source_id = 2
+var tree_source_id = 3
 
-func save():
-	Homeworld.save_chunk(chunk_coords, chunk_data)
-	queue_free()
+# Layers
+var water_layer = 0
+var ground_layer_1 = 1
+var ground_layer_2 = 2
+var cliff_layer_1 = 3
+var trees_layer = 4
+var environment_layer = 5
 
 
-#func _init(pos = Vector2.ZERO):
-#	pos = pos
-#
-#func _draw():
-#	hovered_cell = local_to_map(get_local_mouse_position())
-#	var hover_color = Color.BLACK
-#	hover_color.a = 0.10
-#	draw_polygon(
-#		PackedVector2Array(get_tile_boundaries(map_to_local(hovered_cell))),
-#		PackedColorArray(
-#			[hover_color],
-#		)
-#	)
-#	pass
-#
-#func _process(delta):
-#	queue_redraw()
-#
-#func update():
-#	container.custom_minimum_size = get_used_rect().size * Vector2i(16, 16)
-#	container.size = get_used_rect().size * Vector2i(16, 16)
-#	label.text = str(pos)
+@onready var tile_map: TileMap = $"TileMap"
+var grid: AStarGrid2D = AStarGrid2D.new()
 
-static func get_tile_boundaries(tile: Vector2):
-	var top_left = Vector2(
-		tile.x - 8,
-		tile.y - 8,
-	)
-	var top_right = Vector2(
-		tile.x + 8,
-		tile.y - 8,
-	)
-	var bottom_right = Vector2(
-		tile.x + 8,
-		tile.y + 8,
-	)
-	var bottom_left = Vector2(
-		tile.x - 8,
-		tile.y + 8,
-	)
-	return [top_left, top_right, bottom_right, bottom_left]
+func _init():
+	grid.cell_size = Vector2(16, 16)
+	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	grid.region = Rect2i(tile_map.get_used_rect().position, tile_map.get_used_rect().size)
+	grid.update()
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
