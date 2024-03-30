@@ -32,7 +32,7 @@ var grid: AStarGrid2D = AStarGrid2D.new()
 
 func _init():
 	grid.cell_size = Vector2(16, 16)
-	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 var WANDER_RANGE_FROM_SPAWN = 1
+var LINE_OF_SIGHT_DISTANCE = 10 * 16
 var THREAT_RADIUS = 2
 var map: Map
 var player_speech
@@ -38,11 +39,6 @@ func _input(event: InputEvent):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	#var current_tile = get_tile_position()
-	#var threat_area = Rect2(
-		#Vector2(current_tile.x - THREAT_RADIUS, current_tile.y - THREAT_RADIUS),
-		#Vector2(THREAT_RADIUS * 2, THREAT_RADIUS * 2)
-	#)
 	if threat == null && current_id_path.is_empty():
 		wander_timer = wander_timer + delta
 		if wander_timer > TIME_PERIOD * 2:
@@ -50,7 +46,12 @@ func _process(delta):
 			wander_timer = 0
 		return
 	elif threat != null:
-		set_target(threat.get_tile_position())
+		var distance_from_player = Vector2.ZERO.distance_to(threat.position - position)
+		if distance_from_player <= LINE_OF_SIGHT_DISTANCE:
+			set_target(threat.get_tile_position())
+		else:
+			find_new_target_pos()
+			threat = null
 	
 	if !current_id_path.is_empty():
 		if (target_pos == Vector2.ZERO):
@@ -65,6 +66,7 @@ func _process(delta):
 			else:
 				target_pos = Vector2.ZERO
 				current_point_path = []
+	queue_redraw()
 
 	
 func _mouse_enter():
@@ -73,6 +75,14 @@ func _mouse_enter():
 func _mouse_exit():
 	pointer.clear_hovered(self)
 	
+func _draw():
+	if threat != null:
+		draw_line(
+			Vector2.ZERO,
+			threat.position - position,
+			Color.CYAN
+		)
+
 func find_new_target_pos():
 	var rand_x = randi_range(spawn_tile.x - WANDER_RANGE_FROM_SPAWN, spawn_tile.x + WANDER_RANGE_FROM_SPAWN)
 	var rand_y = randi_range(spawn_tile.y - WANDER_RANGE_FROM_SPAWN, spawn_tile.y + WANDER_RANGE_FROM_SPAWN)
@@ -115,7 +125,7 @@ func something_enter_threat_area(body: PhysicsBody2D):
 	
 func something_exit_threat_area(body: PhysicsBody2D):
 	if body == player:
-		threat = null
+		#threat = null
 		print("player exited threat area")
 	
 func get_context_label():
