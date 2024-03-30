@@ -1,8 +1,8 @@
 extends CharacterBody2D
 
-var WANDER_RANGE_FROM_SPAWN = 1
-var LINE_OF_SIGHT_DISTANCE = 10 * 16
-var THREAT_RADIUS = 2
+@export var wander_range = 1
+@export var line_of_sight = 10
+@export var threat_area_size = 2
 var map: Map
 var player_speech
 var player: Player
@@ -21,6 +21,7 @@ var cursor = Input.CURSOR_POINTING_HAND
 var threat
 
 @onready var threat_area: Area2D = $"ThreatArea"
+@onready var threat_area_shape: CollisionShape2D = $"ThreatArea/CollisionShape2D"
 @onready var pointer
 
 func _ready():
@@ -29,6 +30,10 @@ func _ready():
 	map = get_tree().get_first_node_in_group("map")
 	pointer = get_tree().get_first_node_in_group("pointer")
 	spawn_tile = get_tile_position()
+	threat_area_shape.shape.size = Vector2(
+		16 * threat_area_size, 
+		16 * threat_area_size
+	)
 	threat_area.body_entered.connect(something_enter_threat_area)
 	threat_area.body_exited.connect(something_exit_threat_area)
 	
@@ -47,7 +52,8 @@ func _process(delta):
 		return
 	elif threat != null:
 		var distance_from_player = Vector2.ZERO.distance_to(threat.position - position)
-		if distance_from_player <= LINE_OF_SIGHT_DISTANCE:
+		var line_of_sight_in_tiles = line_of_sight * 16
+		if distance_from_player <= line_of_sight_in_tiles:
 			set_target(threat.get_tile_position())
 		else:
 			find_new_target_pos()
@@ -84,8 +90,8 @@ func _draw():
 		)
 
 func find_new_target_pos():
-	var rand_x = randi_range(spawn_tile.x - WANDER_RANGE_FROM_SPAWN, spawn_tile.x + WANDER_RANGE_FROM_SPAWN)
-	var rand_y = randi_range(spawn_tile.y - WANDER_RANGE_FROM_SPAWN, spawn_tile.y + WANDER_RANGE_FROM_SPAWN)
+	var rand_x = randi_range(spawn_tile.x - wander_range, spawn_tile.x + wander_range)
+	var rand_y = randi_range(spawn_tile.y - wander_range, spawn_tile.y + wander_range)
 	var pos = Vector2(rand_x, rand_y)
 	set_target(pos)
 
@@ -125,7 +131,6 @@ func something_enter_threat_area(body: PhysicsBody2D):
 	
 func something_exit_threat_area(body: PhysicsBody2D):
 	if body == player:
-		#threat = null
 		print("player exited threat area")
 	
 func get_context_label():
