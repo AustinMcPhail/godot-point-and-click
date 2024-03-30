@@ -1,11 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://nh3jwmu6x0ky"]
+[gd_scene load_steps=15 format=3 uid="uid://nh3jwmu6x0ky"]
 
 [ext_resource type="PackedScene" uid="uid://btbt4ei36u0l0" path="res://scenes/interface.tscn" id="1_5yeae"]
 [ext_resource type="PackedScene" uid="uid://dw82qhmkyitot" path="res://scenes/Player.tscn" id="2_pejo2"]
 [ext_resource type="PackedScene" uid="uid://d26u7kbcrsuf7" path="res://scenes/PlayerCamera.tscn" id="3_0rto8"]
 [ext_resource type="PackedScene" uid="uid://b5nj1kfp0dahk" path="res://scenes/PointerHover.tscn" id="4_d2qhy"]
 [ext_resource type="PackedScene" uid="uid://iig3gbtyhguc" path="res://scenes/Map.tscn" id="5_kvrxb"]
-[ext_resource type="Script" path="res://scenes/Slime.gd" id="6_tpmh1"]
+[ext_resource type="Script" path="res://scripts/Slime.gd" id="6_tpmh1"]
 
 [sub_resource type="Gradient" id="Gradient_nkyqm"]
 colors = PackedColorArray(7.8999e-07, 0.307947, 1.07038e-08, 1, 0, 0.545098, 0.419608, 1)
@@ -21,6 +21,20 @@ size = Vector2(10, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nxaqm"]
 size = Vector2(48, 48)
+
+[sub_resource type="Gradient" id="Gradient_ywgrf"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0, 0, 0, 0.392157)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_oypui"]
+gradient = SubResource("Gradient_ywgrf")
+
+[sub_resource type="Gradient" id="Gradient_urxgn"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(1, 0.28955, 0.321549, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_g62lf"]
+gradient = SubResource("Gradient_urxgn")
 
 [node name="TestEnemies" type="Node2D"]
 
@@ -62,5 +76,15 @@ input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Slime/ThreatArea"]
 shape = SubResource("RectangleShape2D_nxaqm")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="Slime"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = -7.0
+value = 100.0
+nine_patch_stretch = true
+texture_under = SubResource("GradientTexture1D_oypui")
+texture_progress = SubResource("GradientTexture1D_g62lf")
 
 [editable path="Map"]

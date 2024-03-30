@@ -3,6 +3,7 @@ extends CharacterBody2D
 @export var wander_range = 1
 @export var line_of_sight = 10
 @export var threat_area_size = 2
+@export var max_health = 10
 var map: Map
 var player_speech
 var player: Player
@@ -10,7 +11,11 @@ var player: Player
 var current_id_path: Array[Vector2i]
 var current_point_path: PackedVector2Array
 var target_pos: Vector2 = Vector2.ZERO
+var previous_pos: Vector2 = Vector2.ZERO
 var spawn_tile: Vector2 = Vector2.ZERO
+
+var current_tile
+var previous_tile
 
 var time = 0
 var wander_timer = 0
@@ -22,6 +27,7 @@ var threat
 
 @onready var threat_area: Area2D = $"ThreatArea"
 @onready var threat_area_shape: CollisionShape2D = $"ThreatArea/CollisionShape2D"
+@onready var health_bar: TextureProgressBar = $"TextureProgressBar"
 @onready var pointer
 
 func _ready():
@@ -30,6 +36,8 @@ func _ready():
 	map = get_tree().get_first_node_in_group("map")
 	pointer = get_tree().get_first_node_in_group("pointer")
 	spawn_tile = get_tile_position()
+	health_bar.max_value = max_health
+	health_bar.value = max_health
 	threat_area_shape.shape.size = Vector2(
 		16 * threat_area_size, 
 		16 * threat_area_size
@@ -44,6 +52,13 @@ func _input(event: InputEvent):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if current_tile != get_tile_position():
+		previous_tile = current_tile
+		current_tile = get_tile_position()
+		map.grid.set_point_solid(current_tile, true)
+		if previous_tile != null:
+			map.grid.set_point_solid(previous_tile, false)
+	
 	if threat == null && current_id_path.is_empty():
 		wander_timer = wander_timer + delta
 		if wander_timer > TIME_PERIOD * 2:
@@ -55,9 +70,13 @@ func _process(delta):
 		var line_of_sight_in_tiles = line_of_sight * 16
 		if distance_from_player <= line_of_sight_in_tiles:
 			set_target(threat.get_tile_position())
+			current_id_path.pop_back()
 		else:
 			find_new_target_pos()
 			threat = null
+	if threat != null:
+		if Vector2.ZERO.distance_to(threat.position - position) < 16:
+			set_target(map.tile_map.local_to_map(previous_pos))
 	
 	if !current_id_path.is_empty():
 		if (target_pos == Vector2.ZERO):
@@ -68,6 +87,7 @@ func _process(delta):
 			if current_point_path.is_empty() == false:
 				current_point_path.remove_at(0)
 			if current_id_path.is_empty() == false:
+				previous_pos = target_pos
 				target_pos = map.tile_map.map_to_local(current_id_path.front())
 			else:
 				target_pos = Vector2.ZERO
