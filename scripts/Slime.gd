@@ -32,7 +32,8 @@ func _ready():
 	map = get_tree().get_first_node_in_group("map")
 	pointer = get_tree().get_first_node_in_group("pointer")
 	navigation = Navigation.new(map, self)
-	navigation.set_speed(0.5)
+	navigation.set_speed(0.25)
+	navigation.show_path = true
 	spawn_tile = navigation.get_tile_position()
 	health_bar.max_value = stats.max_hitpoints
 	health_bar.value = stats.max_hitpoints
@@ -53,7 +54,7 @@ func _input_event(viewport, event: InputEvent, shape_idx):
 			else:
 				player.handle_move_to(self.position)
 
-func _physics_process(delta):	
+func _physics_process(delta):
 	if threat == null && navigation.current_id_path.is_empty():
 		wander_timer = wander_timer + delta
 		if wander_timer > TIME_PERIOD * 2:
@@ -74,7 +75,7 @@ func _physics_process(delta):
 			navigation.handle_move_to(previous_pos)
 
 	if !navigation.current_id_path.is_empty():
-		navigation._physics_process(delta)
+		navigation.physics_process(delta)
 	queue_redraw()
 
 func _mouse_enter():
@@ -84,6 +85,7 @@ func _mouse_exit():
 	pointer.clear_hovered(self)
 	
 func _draw():
+	navigation.draw()
 	if threat != null:
 		draw_line(
 			Vector2.ZERO,

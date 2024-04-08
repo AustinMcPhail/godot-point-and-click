@@ -66,7 +66,6 @@ func _ready():
 		print(environment_tile)
 		if tile_data.get_custom_data("walkable") == true && environment_tile == -1:
 			spawn_tile = tile
-
 	player.position = tile_map.map_to_local(spawn_tile)
 	
 func _process(delta):

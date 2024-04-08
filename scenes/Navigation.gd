@@ -9,15 +9,17 @@ var previous_tile: Vector2
 var map: Map
 var node: Node2D
 var speed: float = 1
+var show_path: bool = false
 
 func _init(_map: Map, _node: Node2D):
 	map = _map
 	node = _node
+	node.add_to_group("navigation")
 	
 func set_speed(_speed: float):
 	speed = _speed
 
-func _physics_process(delta):
+func physics_process(delta):
 	if (target_pos == Vector2.ZERO):
 		target_pos = map.tile_map.map_to_local(current_id_path.front())
 
@@ -74,9 +76,26 @@ func handle_move_to(position: Vector2):
 		current_id_path = id_path
 		for i in current_point_path.size():
 			current_point_path[i] = current_point_path[i] + Vector2(8, 8)
-			
+
 	if (reset_target_to_solid):
 		grid.set_point_solid(map.tile_map.local_to_map(position), true)
+
+func draw():
+	if show_path == true:
+		if current_point_path.is_empty():
+			return
+		if !target_pos:
+			return
+		map.draw_polyline(
+			current_point_path, 
+			Color.REBECCA_PURPLE
+		)
+		var target_tile_bounds = Chunk.get_tile_boundaries(target_pos)
+		target_tile_bounds.append(target_tile_bounds.front())
+		map.draw_polyline(
+			PackedVector2Array(target_tile_bounds),
+			Color.CYAN
+		)
 
 func get_tile_position() -> Vector2:
 	return map.tile_map.local_to_map(node.position)

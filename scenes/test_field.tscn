@@ -1,9 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://clol2uqhbnx40"]
+[gd_scene load_steps=12 format=3 uid="uid://clol2uqhbnx40"]
 
 [ext_resource type="Script" path="res://scripts/Homeworld.gd" id="1_yesp3"]
 [ext_resource type="PackedScene" uid="uid://btbt4ei36u0l0" path="res://scenes/interface.tscn" id="2_xncfc"]
 [ext_resource type="PackedScene" uid="uid://dw82qhmkyitot" path="res://scenes/Player.tscn" id="5_a065t"]
-[ext_resource type="Script" path="res://scripts/Path.gd" id="5_wa5j5"]
 [ext_resource type="PackedScene" uid="uid://b5nj1kfp0dahk" path="res://scenes/PointerHover.tscn" id="5_xbbfe"]
 [ext_resource type="PackedScene" uid="uid://iig3gbtyhguc" path="res://scenes/Map.tscn" id="7_pywg1"]
 
@@ -48,9 +47,6 @@ position_smoothing_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("5_a065t")]
 position = Vector2(121, -68)
-
-[node name="Path" type="Node2D" parent="."]
-script = ExtResource("5_wa5j5")
 
 [node name="PointerHover" parent="." instance=ExtResource("5_xbbfe")]
 

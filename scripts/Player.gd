@@ -24,6 +24,7 @@ func _ready():
 	map = get_tree().get_first_node_in_group("map")
 	navigation = Navigation.new(map, self)
 	navigation.set_speed(1.0)
+	navigation.show_path = true
 	main_hand.texture = inventory.main_hand.texture
 	camera.zoom = current_zoom
 	current_offset = camera.offset
@@ -49,7 +50,6 @@ func _unhandled_input(event):
 		inventory.list_items()
 	if Input.is_action_just_pressed("Player"):
 		skills.list_skills()
-			
 	if Input.is_action_just_pressed("Map"):
 		show_map = !show_map
 		if show_map:
@@ -66,7 +66,6 @@ func _show_map():
 	camera.zoom = map.tile_map.get_used_rect().size / camera.get_viewport().size
 	var x_ratio = 1.0 * camera_rect.size.x / map_rect.size.x # The ratio of the width (The 1.0* is important to convert the ints to float so we get a float and not just 0)
 	var y_ratio = 1.0 * camera_rect.size.y / map_rect.size.y # The ratio of the height
-	
 	if x_ratio < y_ratio:
 		camera.zoom = Vector2(x_ratio, x_ratio)
 	else:
@@ -85,7 +84,7 @@ func _physics_process(delta):
 			else:
 				print("Can't reach!")
 		return
-	navigation._physics_process(delta)
+	navigation.physics_process(delta)
 
 func move_to_and_perform_action(node: Node2D):
 	navigation.handle_move_to(node.position)
