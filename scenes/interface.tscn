@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://btbt4ei36u0l0"]
+[gd_scene load_steps=26 format=3 uid="uid://btbt4ei36u0l0"]
 
 [ext_resource type="Script" path="res://interface.gd" id="1_br545"]
 [ext_resource type="Script" path="res://scripts/Pointer.gd" id="2_b2j7n"]
@@ -10,13 +10,14 @@
 [ext_resource type="Script" path="res://PlayerSpeech.gd" id="8_xbooe"]
 [ext_resource type="Script" path="res://scripts/ContextLabel.gd" id="9_xpf4x"]
 [ext_resource type="Script" path="res://scripts/ContextMenu.gd" id="10_2e6ov"]
+[ext_resource type="Script" path="res://scenes/EquipmentPanel.gd" id="11_py3lv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mmha7"]
 bg_color = Color(0, 0, 0, 0.0980392)
-corner_radius_top_left = 25
-corner_radius_top_right = 25
-corner_radius_bottom_right = 25
-corner_radius_bottom_left = 25
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="Theme" id="Theme_j2xgb"]
 Button/styles/normal = SubResource("StyleBoxFlat_mmha7")
@@ -32,17 +33,17 @@ texture_margin_top = 8.0
 texture_margin_right = 8.0
 texture_margin_bottom = 10.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0o2cl"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mk53o"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1cy70"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_db2tm"]
 corner_radius_top_left = 1024
 corner_radius_top_right = 1024
 corner_radius_bottom_right = 1024
 corner_radius_bottom_left = 1024
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aj1qh"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w56gk"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cu431"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3pith"]
 bg_color = Color(0, 0, 0, 0.490196)
 corner_radius_top_left = 1024
 corner_radius_top_right = 1024
@@ -50,10 +51,10 @@ corner_radius_bottom_right = 1024
 corner_radius_bottom_left = 1024
 
 [sub_resource type="Theme" id="Theme_b3ejx"]
-Button/styles/focus = SubResource("StyleBoxEmpty_0o2cl")
-Button/styles/hover = SubResource("StyleBoxFlat_1cy70")
-Button/styles/normal = SubResource("StyleBoxEmpty_aj1qh")
-Button/styles/pressed = SubResource("StyleBoxFlat_cu431")
+Button/styles/focus = SubResource("StyleBoxEmpty_mk53o")
+Button/styles/hover = SubResource("StyleBoxFlat_db2tm")
+Button/styles/normal = SubResource("StyleBoxEmpty_w56gk")
+Button/styles/pressed = SubResource("StyleBoxFlat_3pith")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yckxv"]
 atlas = ExtResource("3_q6oc5")
@@ -62,6 +63,10 @@ region = Rect2(288, 128, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_pls75"]
 atlas = ExtResource("3_q6oc5")
 region = Rect2(32, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vxflh"]
+atlas = ExtResource("3_q6oc5")
+region = Rect2(384, 160, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_y7je7"]
 atlas = ExtResource("3_q6oc5")
@@ -207,6 +212,17 @@ icon = SubResource("AtlasTexture_pls75")
 icon_alignment = 1
 expand_icon = true
 
+[node name="Equipment" type="Button" parent="Buttons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+tooltip_text = "Inventory"
+mouse_default_cursor_shape = 2
+theme = SubResource("Theme_b3ejx")
+icon = SubResource("AtlasTexture_vxflh")
+icon_alignment = 1
+expand_icon = true
+
 [node name="Proficiencies" type="Button" parent="Buttons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -258,3 +274,315 @@ offset_top = 48.0
 offset_right = 40.0
 offset_bottom = 88.0
 script = ExtResource("10_2e6ov")
+
+[node name="EquipmentPanel" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1656.0
+offset_top = 610.0
+offset_right = -4.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_fodo3")
+script = ExtResource("11_py3lv")
+
+[node name="GridContainer" type="GridContainer" parent="EquipmentPanel"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="EquipmentPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 3
+
+[node name="Head" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer/Head"]
+layout_mode = 0
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "Head"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="EquipmentPanel/GridContainer/HBoxContainer/Head"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 41.0
+offset_bottom = 37.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="EquipmentPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Neck" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer2/Neck"]
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "Neck"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="EquipmentPanel/GridContainer/HBoxContainer2/Neck"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 41.0
+offset_bottom = 37.0
+
+[node name="Back" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer2/Back"]
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "Back"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="EquipmentPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="MainHand" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer3/MainHand"]
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "M. Hand"
+horizontal_alignment = 1
+vertical_alignment = 2
+autowrap_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="EquipmentPanel/GridContainer/HBoxContainer3/MainHand"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 41.0
+offset_bottom = 37.0
+
+[node name="Torso" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer3/Torso"]
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "Head"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="EquipmentPanel/GridContainer/HBoxContainer3/Torso"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 41.0
+offset_bottom = 37.0
+
+[node name="OffHand" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer3/OffHand"]
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "O. Hand"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="EquipmentPanel/GridContainer/HBoxContainer3/OffHand"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 41.0
+offset_bottom = 37.0
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="EquipmentPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Legs" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer4/Legs"]
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "Legs"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="EquipmentPanel/GridContainer/HBoxContainer4/Legs"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 41.0
+offset_bottom = 37.0
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="EquipmentPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Feet" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer5"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer5/Feet"]
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "Feet"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="EquipmentPanel/GridContainer/HBoxContainer5/Feet"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 41.0
+offset_bottom = 37.0
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="EquipmentPanel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 3
+
+[node name="MainHandWrist" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer6"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer6/MainHandWrist"]
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "M. Wrist
+"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="EquipmentPanel/GridContainer/HBoxContainer6/MainHandWrist"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 41.0
+offset_bottom = 37.0
+
+[node name="MainHandRing" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer6"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer6/MainHandRing"]
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "M. Ring
+"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="EquipmentPanel/GridContainer/HBoxContainer6/MainHandRing"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 41.0
+offset_bottom = 37.0
+
+[node name="OffHandRing" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer6"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer6/OffHandRing"]
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "O. Ring
+"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="EquipmentPanel/GridContainer/HBoxContainer6/OffHandRing"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 41.0
+offset_bottom = 37.0
+
+[node name="OffHandWrist" type="Button" parent="EquipmentPanel/GridContainer/HBoxContainer6"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_j2xgb")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/HBoxContainer6/OffHandWrist"]
+offset_left = -1.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("3_fodo3")
+theme_override_font_sizes/font_size = 10
+text = "O.Wrist
+"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="EquipmentPanel/GridContainer/HBoxContainer6/OffHandWrist"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 41.0
+offset_bottom = 37.0

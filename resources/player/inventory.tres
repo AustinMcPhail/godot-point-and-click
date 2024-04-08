@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PlayerInventory" load_steps=3 format=3 uid="uid://jlm4oigpe8mu"]
+
+[ext_resource type="Resource" uid="uid://cljk3hejkij5v" path="res://resources/items/stick/stick.tres" id="1_jo47e"]
+[ext_resource type="Script" path="res://resources/PlayerInventory.gd" id="1_s3fcm"]
+
+[resource]
+script = ExtResource("1_s3fcm")
+main_hand = ExtResource("1_jo47e")
+items = {}

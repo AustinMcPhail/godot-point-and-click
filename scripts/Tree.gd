@@ -17,6 +17,7 @@ var player_speech
 var player: Player
 var pointer: Pointer
 var homeworld: Homeworld
+var navigation: Navigation
 
 var cursor = Input.CURSOR_POINTING_HAND
 
@@ -31,6 +32,10 @@ func _ready():
 	player = get_tree().get_first_node_in_group("player")
 	pointer = get_tree().get_first_node_in_group("pointer")
 	homeworld = get_tree().get_first_node_in_group("homeworld")
+	navigation = Navigation.new(
+		get_tree().get_first_node_in_group("map"),
+		self
+	)
 	sprite.visible = true
 	logSprite.visible = false
 	

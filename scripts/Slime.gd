@@ -1,21 +1,15 @@
 extends CharacterBody2D
 
-@export var wander_range = 1
-@export var line_of_sight = 10
-@export var threat_area_size = 2
-@export var max_health = 10
+@export var stats: EnemyBase
+@export var can_wander: bool = false
+
 var map: Map
 var player_speech
 var player: Player
-
-var current_id_path: Array[Vector2i]
-var current_point_path: PackedVector2Array
-var target_pos: Vector2 = Vector2.ZERO
 var previous_pos: Vector2 = Vector2.ZERO
 var spawn_tile: Vector2 = Vector2.ZERO
 
-var current_tile
-var previous_tile
+var navigation: Navigation
 
 var time = 0
 var wander_timer = 0
@@ -23,7 +17,9 @@ var TIME_PERIOD = 1
 
 var cursor = Input.CURSOR_POINTING_HAND
 
-var threat
+var threat: Player
+var alive = true
+var player_is_doing_action = false
 
 @onready var threat_area: Area2D = $"ThreatArea"
 @onready var threat_area_shape: CollisionShape2D = $"ThreatArea/CollisionShape2D"
@@ -35,66 +31,52 @@ func _ready():
 	player = get_tree().get_first_node_in_group("player")
 	map = get_tree().get_first_node_in_group("map")
 	pointer = get_tree().get_first_node_in_group("pointer")
-	spawn_tile = get_tile_position()
-	health_bar.max_value = max_health
-	health_bar.value = max_health
+	navigation = Navigation.new(map, self)
+	navigation.set_speed(0.5)
+	spawn_tile = navigation.get_tile_position()
+	health_bar.max_value = stats.max_hitpoints
+	health_bar.value = stats.max_hitpoints
 	threat_area_shape.shape.size = Vector2(
-		16 * threat_area_size, 
-		16 * threat_area_size
+		16 * stats.threat_area_size, 
+		16 * stats.threat_area_size
 	)
 	threat_area.body_entered.connect(something_enter_threat_area)
 	threat_area.body_exited.connect(something_exit_threat_area)
-	
-func _input(event: InputEvent):
+
+func _input_event(viewport, event: InputEvent, shape_idx):
 	if event is InputEventMouseButton:
 		if Input.is_action_just_pressed("RightMouse"):
 			pointer.open_context_menu(self, event.global_position)
+		if Input.is_action_just_pressed("LeftMouse"):
+			if alive:
+				player.move_to_and_perform_action(self)
+			else:
+				player.handle_move_to(self.position)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	if current_tile != get_tile_position():
-		previous_tile = current_tile
-		current_tile = get_tile_position()
-		map.grid.set_point_solid(current_tile, true)
-		if previous_tile != null:
-			map.grid.set_point_solid(previous_tile, false)
-	
-	if threat == null && current_id_path.is_empty():
+func _physics_process(delta):	
+	if threat == null && navigation.current_id_path.is_empty():
 		wander_timer = wander_timer + delta
 		if wander_timer > TIME_PERIOD * 2:
 			find_new_target_pos()
 			wander_timer = 0
-		return
 	elif threat != null:
 		var distance_from_player = Vector2.ZERO.distance_to(threat.position - position)
-		var line_of_sight_in_tiles = line_of_sight * 16
+		var line_of_sight_in_tiles = stats.line_of_sight * 16
 		if distance_from_player <= line_of_sight_in_tiles:
-			set_target(threat.get_tile_position())
-			current_id_path.pop_back()
+			navigation.handle_move_to(threat.position)
+			#navigation.current_id_path.pop_back()
 		else:
 			find_new_target_pos()
 			threat = null
+
 	if threat != null:
-		if Vector2.ZERO.distance_to(threat.position - position) < 16:
-			set_target(map.tile_map.local_to_map(previous_pos))
-	
-	if !current_id_path.is_empty():
-		if (target_pos == Vector2.ZERO):
-			target_pos = map.tile_map.map_to_local(current_id_path.front())
-		global_position = global_position.move_toward(target_pos, 0.1)
-		if global_position == target_pos:
-			current_id_path.pop_front()
-			if current_point_path.is_empty() == false:
-				current_point_path.remove_at(0)
-			if current_id_path.is_empty() == false:
-				previous_pos = target_pos
-				target_pos = map.tile_map.map_to_local(current_id_path.front())
-			else:
-				target_pos = Vector2.ZERO
-				current_point_path = []
+		if navigation.get_tile_position() == threat.navigation.get_tile_position():
+			navigation.handle_move_to(previous_pos)
+
+	if !navigation.current_id_path.is_empty():
+		navigation._physics_process(delta)
 	queue_redraw()
 
-	
 func _mouse_enter():
 	pointer.set_hovered(self)
 
@@ -110,39 +92,10 @@ func _draw():
 		)
 
 func find_new_target_pos():
-	var rand_x = randi_range(spawn_tile.x - wander_range, spawn_tile.x + wander_range)
-	var rand_y = randi_range(spawn_tile.y - wander_range, spawn_tile.y + wander_range)
+	var rand_x = randi_range(spawn_tile.x - stats.wander_range, spawn_tile.x + stats.wander_range)
+	var rand_y = randi_range(spawn_tile.y - stats.wander_range, spawn_tile.y + stats.wander_range)
 	var pos = Vector2(rand_x, rand_y)
-	set_target(pos)
-
-func set_target(pos: Vector2):
-	var id_path: Array[Vector2i]
-	if target_pos != Vector2.ZERO:
-		id_path = map.grid.get_id_path(
-			map.tile_map.local_to_map(target_pos),
-			pos
-		)
-		current_point_path = map.grid.get_point_path(
-			map.tile_map.local_to_map(target_pos),
-			pos
-		)
-	else:
-		id_path = map.grid.get_id_path(
-			map.tile_map.local_to_map(global_position),
-			pos
-		).slice(1)
-		current_point_path = map.grid.get_point_path(
-			map.tile_map.local_to_map(global_position),
-			pos
-		)
-	if id_path.is_empty() == false:
-		current_id_path = id_path
-		for i in current_point_path.size():
-			current_point_path[i] = current_point_path[i] + Vector2(8, 8)
-	return
-	
-func get_tile_position() -> Vector2:
-	return map.tile_map.local_to_map(position)
+	navigation.handle_move_to(map.tile_map.map_to_local(pos))
 	
 func something_enter_threat_area(body: PhysicsBody2D):
 	if body == player:
@@ -158,9 +111,31 @@ func get_context_label():
 	
 func examine():
 	player_speech.say("Green and slimy.")
+	
+func start():
+	if alive:
+		print("You begin attacking the slime")
+		player_is_doing_action = true
+	
+func stop():
+	#animation_player.stop()
+	player_is_doing_action = false
+	
+func is_started():
+	return player_is_doing_action
+	
+func hit(damage: int, critical_hit = false):
+	#if (critical_hit):
+		#animation_player.play("shake_critical")
+	#else:
+		#animation_player.play("shake")
+	stats.hitpoints = stats.hitpoints - damage
+
+func attack():
+	player.move_to_and_perform_action(self)
 
 func get_context_menu():
 	return [
-		["Attack", func(): print("Attack")],
+		["Attack", self.attack],
 		["Examine", self.examine]
 	]

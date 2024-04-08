@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="WeaponBase" load_steps=3 format=3 uid="uid://c1bksels61tas"]
+
+[ext_resource type="Script" path="res://resources/WeaponBase.gd" id="1_xnvbs"]
+[ext_resource type="Texture2D" uid="uid://buy2vqk7xws42" path="res://resources/items/butter_knife/butter_knife.png" id="2_iyy4w"]
+
+[resource]
+script = ExtResource("1_xnvbs")
+weapon_speed = 1
+weapon_accuracy = 25.0
+weapon_max_hit = 2
+equipment_slot = 96
+item_name = "Butter Knife"
+texture = ExtResource("2_iyy4w")

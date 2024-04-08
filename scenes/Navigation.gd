@@ -1,0 +1,82 @@
+class_name Navigation
+
+var current_id_path: Array[Vector2i]
+var current_point_path: PackedVector2Array
+var target_pos: Vector2 = Vector2.ZERO
+var current_tile: Vector2
+var previous_tile: Vector2
+
+var map: Map
+var node: Node2D
+var speed: float = 1
+
+func _init(_map: Map, _node: Node2D):
+	map = _map
+	node = _node
+	
+func set_speed(_speed: float):
+	speed = _speed
+
+func _physics_process(delta):
+	if (target_pos == Vector2.ZERO):
+		target_pos = map.tile_map.map_to_local(current_id_path.front())
+
+	if current_tile != get_tile_position():
+		previous_tile = current_tile
+		current_tile = get_tile_position()
+		map.grid.set_point_solid(current_tile, true)
+		if previous_tile != null:
+			map.grid.set_point_solid(previous_tile, false)
+
+	node.global_position = node.global_position.move_toward(target_pos, speed)
+	if node.global_position == target_pos:
+		current_id_path.pop_front()
+		if current_point_path.is_empty() == false:
+			current_point_path.remove_at(0)
+		if current_id_path.is_empty() == false:
+			target_pos = map.tile_map.map_to_local(current_id_path.front())
+		else:
+			target_pos = Vector2.ZERO
+			current_point_path = []
+
+func handle_move_to(position: Vector2):
+	var clicked_tile = map.tile_map.local_to_map(position);
+	var reset_target_to_solid = false
+	var grid = map.grid
+	
+	if (grid.is_point_solid(clicked_tile)):
+		var tile_data = map.tile_map.get_cell_tile_data(0, clicked_tile)
+		reset_target_to_solid = true
+		grid.set_point_solid(map.tile_map.local_to_map(position), false)
+		
+	var id_path: Array[Vector2i]
+	if target_pos != Vector2.ZERO:
+		id_path = grid.get_id_path(
+			map.tile_map.local_to_map(target_pos),
+			map.tile_map.local_to_map(position)
+		)
+		current_point_path = grid.get_point_path(
+			map.tile_map.local_to_map(target_pos),
+			map.tile_map.local_to_map(position)
+		)
+	else:
+		id_path = grid.get_id_path(
+			map.tile_map.local_to_map(node.global_position),
+			map.tile_map.local_to_map(position)
+		).slice(1)
+		current_point_path = grid.get_point_path(
+			map.tile_map.local_to_map(node.global_position),
+			map.tile_map.local_to_map(position)
+		)
+	if id_path.is_empty() == false:
+		if reset_target_to_solid:
+			id_path.pop_back()
+		current_id_path = id_path
+		for i in current_point_path.size():
+			current_point_path[i] = current_point_path[i] + Vector2(8, 8)
+			
+	if (reset_target_to_solid):
+		grid.set_point_solid(map.tile_map.local_to_map(position), true)
+
+func get_tile_position() -> Vector2:
+	return map.tile_map.local_to_map(node.position)

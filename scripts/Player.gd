@@ -1,28 +1,30 @@
+extends CharacterBody2D
 class_name Player
 
-extends Node2D
-
 @export_category("Admin")
-@export var skills: Skills
+@export var skills: PlayerSkills
+@export var inventory: PlayerInventory
 @export var show_map : bool = false
 
-var current_id_path: Array[Vector2i]
-var current_point_path: PackedVector2Array
-var target_pos: Vector2 = Vector2.ZERO
-var action_node
-@onready var inventory: Inventory = $"Inventory"
 @onready var sprite: PlayerSprite = $"PlayerSprite"
+@onready var main_hand: TextureRect = $MainHand
+
+var action_node
 var camera: Camera2D
-var map
 var pointer: Pointer
 var current_zoom = Vector2(8, 8)
 var current_offset: Vector2
+var map: Map
+var navigation: Navigation
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	map = get_tree().get_first_node_in_group("map")
 	camera = get_tree().get_first_node_in_group("camera")
 	pointer = get_tree().get_first_node_in_group("pointer")
+	map = get_tree().get_first_node_in_group("map")
+	navigation = Navigation.new(map, self)
+	navigation.set_speed(1.0)
+	main_hand.texture = inventory.main_hand.texture
 	camera.zoom = current_zoom
 	current_offset = camera.offset
 
@@ -38,7 +40,11 @@ func _unhandled_input(event):
 				current_zoom = camera.zoom
 				current_offset = camera.offset
 	if Input.is_action_just_pressed("LeftMouse"):
-		handle_move_to(get_global_mouse_position())
+		pointer.close_context_menu()
+		if action_node != null && action_node.is_started():
+			action_node.stop()
+			action_node = null
+		navigation.handle_move_to(get_global_mouse_position())
 	if Input.is_action_just_pressed("Inventory"):
 		inventory.list_items()
 	if Input.is_action_just_pressed("Player"):
@@ -70,76 +76,20 @@ func _physics_process(delta):
 	camera.position = position
 	if (show_map):
 		_show_map()
-	sprite.update_animation_state(current_id_path, target_pos)
-
-	if current_id_path.is_empty():
+	sprite.update_animation_state(navigation.current_id_path, navigation.target_pos)
+	if navigation.current_id_path.is_empty():
 		if action_node != null and !action_node.is_started():
-			if get_tile_position().distance_to(action_node.get_tile_position()) <= 1:
+			if navigation.get_tile_position().distance_to(action_node.navigation.get_tile_position()) <= 1:
 				sprite.update_animation_direction(action_node.position)
 				action_node.start()
 			else:
 				print("Can't reach!")
 		return
-	if (target_pos == Vector2.ZERO):
-		target_pos = map.tile_map.map_to_local(current_id_path.front())	
-	global_position = global_position.move_toward(target_pos, 1)
-	if global_position == target_pos:
-		current_id_path.pop_front()
-		if current_point_path.is_empty() == false:
-			current_point_path.remove_at(0)
-		if current_id_path.is_empty() == false:
-			target_pos = map.tile_map.map_to_local(current_id_path.front())
-		else:
-			target_pos = Vector2.ZERO
-			current_point_path = []
+	navigation._physics_process(delta)
 
 func move_to_and_perform_action(node: Node2D):
-	handle_move_to(node.position)
+	navigation.handle_move_to(node.position)
 	action_node = node
-	
-func handle_move_to(position: Vector2):
-	pointer.close_context_menu()
-	if action_node != null && action_node.is_started():
-		action_node.stop()
-		action_node = null
-
-	var clicked_tile = map.tile_map.local_to_map(position);
-	var reset_target_to_solid = false
-	var grid = map.grid
-	
-	if (grid.is_point_solid(clicked_tile)):
-		var tile_data = map.tile_map.get_cell_tile_data(0, clicked_tile)
-		reset_target_to_solid = true
-		grid.set_point_solid(map.tile_map.local_to_map(position), false)
-		
-	var id_path: Array[Vector2i]
-	if target_pos != Vector2.ZERO:
-		id_path = grid.get_id_path(
-			map.tile_map.local_to_map(target_pos),
-			map.tile_map.local_to_map(position)
-		)
-		current_point_path = grid.get_point_path(
-			map.tile_map.local_to_map(target_pos),
-			map.tile_map.local_to_map(position)
-		)
-	else:
-		id_path = grid.get_id_path(
-			map.tile_map.local_to_map(global_position),
-			map.tile_map.local_to_map(position)
-		).slice(1)
-		current_point_path = grid.get_point_path(
-			map.tile_map.local_to_map(global_position),
-			map.tile_map.local_to_map(position)
-		)
-	if id_path.is_empty() == false:
-		if reset_target_to_solid:
-			id_path.pop_back()
-		current_id_path = id_path
-		for i in current_point_path.size():
-			current_point_path[i] = current_point_path[i] + Vector2(8, 8)
-			
-	if (reset_target_to_solid):
-		grid.set_point_solid(map.tile_map.local_to_map(position), true)
 
 func stop_actions():
 	if action_node != null:
@@ -149,6 +99,3 @@ func stop_actions():
 func complete_action(exp: Dictionary, result: Dictionary):
 	skills.add_exp(exp)
 	inventory.add_items(result);
-
-func get_tile_position() -> Vector2:
-	return map.tile_map.local_to_map(position)

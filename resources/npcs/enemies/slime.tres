@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EnemyBase" load_steps=2 format=3 uid="uid://6g06ad07xhl"]
+
+[ext_resource type="Script" path="res://resources/EnemyBase.gd" id="1_rhr51"]
+
+[resource]
+script = ExtResource("1_rhr51")
+challenge_level = 1
+defense_level = 1
+attack_level = 1
+attack_speed = 1
+wander_range = 1
+line_of_sight = 10
+threat_area_size = 2
+max_hitpoints = 10
+current_hitpoints = 10
+is_invincible = false
+name = "Base"

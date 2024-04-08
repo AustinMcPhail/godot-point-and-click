@@ -9,7 +9,7 @@ extends GridContainer
 @onready var button_7: Button = $Button7
 @onready var button_8: Button = $Button8
 @onready var button_9: Button = $Button9
-var inventory: Inventory
+var player: Player
 
 var buttons = []
 
@@ -17,7 +17,7 @@ var dragging_button
 var hovered_button
 
 func _ready():
-	inventory = get_tree().get_first_node_in_group("inventory")
+	player = get_tree().get_first_node_in_group("player")
 	
 	buttons = [
 		button_1,
@@ -38,10 +38,11 @@ func _ready():
 		button.button_up.connect(button_up.bind(button))
 
 func _process(delta):
-	var inv_keys = inventory.items.keys()
-	for i in range(inv_keys.size()):
-		var button = get_button(i + 1)
-		button.text = inv_keys[i]
+	if player != null:
+		var inv_keys = player.inventory.items.keys()
+		for i in range(inv_keys.size()):
+			var button = get_button(i + 1)
+			button.text = inv_keys[i]
 		
 func swap_buttons(a, b):
 	var a_pos = a.position
