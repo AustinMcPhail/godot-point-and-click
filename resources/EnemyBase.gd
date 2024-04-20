@@ -1,4 +1,5 @@
 extends NPCBase
+
 class_name EnemyBase
 
 @export_category("Stats")
@@ -6,7 +7,7 @@ class_name EnemyBase
 @export var defense_level = 1
 @export var attack_level = 1
 @export var attack_speed = 1
-@export var movement_speed = 1
+@export var movement_speed: float = 0.25
 
 @export_category("Player Detection")
 @export var wander_range = 1

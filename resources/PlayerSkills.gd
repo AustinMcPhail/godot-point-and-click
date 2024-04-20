@@ -1,13 +1,23 @@
 extends Resource
 class_name PlayerSkills
 
-@export var exp_mod = 1
-var woodcutting: Woodcutting = Woodcutting.new()
-@export_range(1, 100) var woodcutting_level: int = woodcutting.level:
+var exp_mod = 1
+
+@export_category("Woodcutting")
+var woodcutting: Skill = Skill.new("woodcutting")
+@export_range(0, 100) var woodcutting_level: int = woodcutting.level:
 	set(level):
 		woodcutting.set_level(level)
 	get:
 		return woodcutting.level
+		
+@export_category("Accuracy")
+var accuracy: Skill = Skill.new("Accuracy")
+@export_range(0, 100) var accuracy_level: int = accuracy.level:
+	set(level):
+		accuracy.set_level(level)
+	get:
+		return accuracy.level
 		
 		
 func add_exp(exp: Dictionary):

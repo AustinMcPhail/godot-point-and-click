@@ -32,6 +32,14 @@ func set_level(_level: int):
 	exp_until_next_level = get_exp_required_for_level(level + 1)
 	print("current_exp " + str(current_exp))
 	print("exp_until_next_level " + str(exp_until_next_level))
+	
+func set_exp(_exp: int):
+	current_exp = _exp
+	level = get_level_from_exp(_exp)
+	print("Setting to level: " + str(level))
+	print("current_exp " + str(current_exp))
+	exp_until_next_level = get_exp_required_for_level(level + 1)
+	print("exp_until_next_level " + str(exp_until_next_level))
 
 func get_exp_required_for_level(level: int):
 	var points = 0
@@ -42,3 +50,12 @@ func get_exp_required_for_level(level: int):
 			return total
 		total = int(floor(points / 4));
 	return total
+	
+func get_level_from_exp(_exp: int) -> int:
+	var level = 1
+	while true && level <= 100:
+		var exp_required = get_exp_required_for_level(level)
+		if _exp < exp_required:
+			return level - 1
+		level += 1
+	return 100

@@ -9,7 +9,7 @@ var time = 0
 var regen_timer = 0
 var TIME_PERIOD = 1
 var player_is_doing_action = false
-var EXP_PER_ACTION = {Woodcutting.NAME: 10.0}
+var EXP_PER_ACTION = {"woocutting": 10.0}
 var RESULT_PER_ACTION = {"log": 1}
 var BASE_CHANCE_TO_FAIL_ACTION = 20.0
 
@@ -31,11 +31,12 @@ func _ready():
 	player_speech = get_tree().get_first_node_in_group("player_speech")
 	player = get_tree().get_first_node_in_group("player")
 	pointer = get_tree().get_first_node_in_group("pointer")
-	homeworld = get_tree().get_first_node_in_group("homeworld")
 	navigation = Navigation.new(
 		get_tree().get_first_node_in_group("map"),
 		self
 	)
+	navigation.set_moveable(false)
+	navigation.set_solid(true)
 	sprite.visible = true
 	logSprite.visible = false
 	
@@ -52,9 +53,10 @@ func _input_event(viewport, event: InputEvent, shape_idx):
 		if Input.is_action_just_pressed("LeftMouse"):
 			print(alive)
 			if alive:
-				player.move_to_and_perform_action(self)
+				player.navigation.handle_move_to(self.position)
+				#player.move_to_and_perform_action(self)
 			else:
-				player.handle_move_to(self.position)
+				player.navigation.handle_move_to(self.position)
 
 func _process(delta):
 	time += delta
@@ -64,8 +66,8 @@ func _process(delta):
 		if player_is_doing_action:
 			if hitpoints > 0:
 				var chance = randf_range(0.0, 100.0)
-				var fail_threshold = max(0.0, BASE_CHANCE_TO_FAIL_ACTION - player.skills.get_skill(Woodcutting.NAME).level)
-				var crit_threshold = min(99.0 - (player.skills.get_skill(Woodcutting.NAME).level / 2), 99.0)
+				var fail_threshold = max(0.0, BASE_CHANCE_TO_FAIL_ACTION - player.skills.woodcutting.level)
+				var crit_threshold = min(99.0 - (player.skills.woodcutting.level / 2), 99.0)
 				print("Chance: " + str(chance) + ", Fail threshold: " + str(fail_threshold) + ", Crit threshold: " + str(crit_threshold))
 				if chance <= fail_threshold:
 					print("You miss your swing and the axe glances off the bark of the tree")
@@ -102,7 +104,10 @@ func _process(delta):
 		progress_bar.visible = false
 		sprite.visible = true
 		logSprite.visible = false
-			
+		
+func _physics_process(delta):
+	navigation.physics_process(delta)
+
 func start():
 	if alive:
 		print("You begin chopping the tree")
@@ -129,7 +134,7 @@ func get_context_label():
 	return "Tree"
 	
 func chop():
-	player.move_to_and_perform_action(self)
+	player.queue_action(self, Player.ActionType.CHOP)
 	
 func examine():
 	player_speech.say("It is a tree.")

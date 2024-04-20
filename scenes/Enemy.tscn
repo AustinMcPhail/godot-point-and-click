@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://dp1uennl3kkfm"]
 
 [ext_resource type="Script" path="res://scripts/Slime.gd" id="1_sg1jr"]
-[ext_resource type="Resource" uid="uid://6g06ad07xhl" path="res://resources/npcs/enemies/slime.tres" id="2_g7511"]
+[ext_resource type="Resource" uid="uid://6g06ad07xhl" path="res://resources/npcs/enemies/slime.tres" id="2_874dr"]
 
 [sub_resource type="Gradient" id="Gradient_nkyqm"]
 colors = PackedColorArray(7.8999e-07, 0.307947, 1.07038e-08, 1, 0, 0.545098, 0.419608, 1)
@@ -36,7 +36,7 @@ gradient = SubResource("Gradient_urxgn")
 position = Vector2(88, 56)
 input_pickable = true
 script = ExtResource("1_sg1jr")
-stats = ExtResource("2_g7511")
+stats = ExtResource("2_874dr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("GradientTexture2D_3226x")

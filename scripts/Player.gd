@@ -1,6 +1,11 @@
 extends CharacterBody2D
 class_name Player
 
+enum ActionType {
+	ATTACK,
+	CHOP
+}
+
 @export_category("Admin")
 @export var skills: PlayerSkills
 @export var inventory: PlayerInventory
@@ -9,13 +14,18 @@ class_name Player
 @onready var sprite: PlayerSprite = $"PlayerSprite"
 @onready var main_hand: TextureRect = $MainHand
 
-var action_node
+var action_cooldown_timer = 0
+
 var camera: Camera2D
 var pointer: Pointer
 var current_zoom = Vector2(8, 8)
 var current_offset: Vector2
 var map: Map
 var navigation: Navigation
+var attack_timer
+
+var current_action
+var action_queue = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,7 +33,8 @@ func _ready():
 	pointer = get_tree().get_first_node_in_group("pointer")
 	map = get_tree().get_first_node_in_group("map")
 	navigation = Navigation.new(map, self)
-	navigation.set_speed(1.0)
+	navigation.set_speed(1.5)
+	navigation.set_solid(true)
 	navigation.show_path = true
 	main_hand.texture = inventory.main_hand.texture
 	camera.zoom = current_zoom
@@ -41,10 +52,9 @@ func _unhandled_input(event):
 				current_zoom = camera.zoom
 				current_offset = camera.offset
 	if Input.is_action_just_pressed("LeftMouse"):
+		action_queue.clear()
+		current_action = null
 		pointer.close_context_menu()
-		if action_node != null && action_node.is_started():
-			action_node.stop()
-			action_node = null
 		navigation.handle_move_to(get_global_mouse_position())
 	if Input.is_action_just_pressed("Inventory"):
 		inventory.list_items()
@@ -70,31 +80,43 @@ func _show_map():
 		camera.zoom = Vector2(x_ratio, x_ratio)
 	else:
 		camera.zoom = Vector2(y_ratio, y_ratio)
+	
 
 func _physics_process(delta):
 	camera.position = position
 	if (show_map):
 		_show_map()
+	do_current_action(delta)
 	sprite.update_animation_state(navigation.current_id_path, navigation.target_pos)
-	if navigation.current_id_path.is_empty():
-		if action_node != null and !action_node.is_started():
-			if navigation.get_tile_position().distance_to(action_node.navigation.get_tile_position()) <= 1:
-				sprite.update_animation_direction(action_node.position)
-				action_node.start()
-			else:
-				print("Can't reach!")
-		return
 	navigation.physics_process(delta)
 
-func move_to_and_perform_action(node: Node2D):
-	navigation.handle_move_to(node.position)
-	action_node = node
-
-func stop_actions():
-	if action_node != null:
-		action_node.stop()
-		action_node = null
+func queue_action(node: Node2D, type: ActionType):
+	action_queue.push_back([node, type])
 
 func complete_action(exp: Dictionary, result: Dictionary):
 	skills.add_exp(exp)
 	inventory.add_items(result);
+	
+func do_current_action(delta):
+	action_cooldown_timer -= delta
+	
+	if current_action == null && !action_queue.is_empty():
+		current_action = action_queue.pop_front()
+	
+	if current_action != null:
+		var node = current_action[0]
+		var action_type: ActionType = current_action[1]
+		var path: Array = navigation.get_path_to(node.position, 1)[0]
+		if !path.is_empty():
+			navigation.handle_move_to(node.position, 1)
+		else:
+			if action_type == ActionType.ATTACK:
+				attack(node, delta)
+
+var attack_cooldown = 5
+func attack(node, delta):
+	if action_cooldown_timer <= 0:
+		print(Time.get_unix_time_from_system(), " Attacking")
+		node.on_attack(skills)
+		action_cooldown_timer = attack_cooldown
+	pass
